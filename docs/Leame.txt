@@ -1,0 +1,72 @@
+--------------------------------------------------------------------
+Small
+Grafo 1
+Dx 100
+Numero de vertices: 122
+Numero de arcos: 959
+--------------------------------------------------------------------
+Small
+Grafo 1
+Dx 250
+Numero de vertices: 118
+Numero de arcos: 925
+--------------------------------------------------------------------
+Small
+Grafo 1
+Dx 500
+Numero de vertices: 105
+Numero de arcos: 739
+--------------------------------------------------------------------
+Small
+Grafo 1
+Dx 750
+Numero de vertices: 94
+Numero de arcos: 615
+--------------------------------------------------------------------
+Medium
+Grafo 1
+Dx 100
+Numero de vertices: 219
+Numero de arcos: 2498
+--------------------------------------------------------------------
+Medium
+Grafo 1
+Dx 250
+Numero de vertices: 210
+Numero de arcos: 2416
+--------------------------------------------------------------------
+Medium
+Grafo 1
+Dx 500
+Numero de vertices: 168
+Numero de arcos: 1891
+--------------------------------------------------------------------
+Medium
+Grafo 1
+Dx 750
+Numero de vertices: 142
+Numero de arcos: 1682
+--------------------------------------------------------------------
+Large
+Grafo 1
+Dx 100
+Numero de vertices: 319
+Numero de arcos: 6173
+--------------------------------------------------------------------
+Large
+Grafo 1
+Dx 250
+Numero de vertices: 297
+Numero de arcos: 5571
+--------------------------------------------------------------------
+Large
+Grafo 1
+Dx 500
+Numero de vertices: 225
+Numero de arcos: 4187
+--------------------------------------------------------------------
+Large
+Grafo 1
+Dx 750
+Numero de vertices: 175
+Numero de arcos: 3415
