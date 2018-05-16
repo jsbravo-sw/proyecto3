@@ -6,9 +6,9 @@ public class InfoServicios implements Comparable<InfoServicios>
 {
 	private String vertexInicialId, vertexFinalId;
 	private double trip_total, trip_miles;
-	private int  trip_seconds;
+	private double  trip_seconds;
 	private int cantidadServicios=0;
-	public InfoServicios(double pTripTotal, double pTripMiles, int pTripSeconds)
+	public InfoServicios(double pTripTotal, double pTripMiles, double pTripSeconds)
 	{
 		trip_miles = pTripMiles;
 		trip_total = pTripTotal;
@@ -39,7 +39,7 @@ public class InfoServicios implements Comparable<InfoServicios>
 	public double getTrip_seconds() {
 		return ((double) Math.round(trip_seconds*100/cantidadServicios))/100;
 	}
-	public void setTrip_seconds(int trip_seconds) {
+	public void setTrip_seconds(double trip_seconds) {
 		this.trip_seconds = trip_seconds;
 	}
 	public String getVertexInicialId()

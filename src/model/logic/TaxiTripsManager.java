@@ -4,21 +4,20 @@ package model.logic;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import API.ITaxiTripsManager;
 import model.data_structures.Graph;
+import model.data_structures.Graph.Edge;
 import model.data_structures.Graph.Vertex;
+import model.data_structures.Keys;
 import model.data_structures.Lista;
+import model.data_structures.SequentialSearch;
 import model.vo.InfoServicios;
 import model.vo.Servicio;
 
@@ -43,7 +42,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		int out =0;
 		if (!direccionJson.equals(DIRECCION_LARGE_JSON))
 		{
-			
+
 			if(direccionJson.equals(DIRECCION_MEDIUM_JSON))
 				json = "Medium";
 			else
@@ -485,9 +484,9 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 					System.out.println("Total de servicios: " + sum);
 					System.out.println("Total de servicios saltados por lat/long vacias: " + out);
 					System.out.println("Total neto: " + (sum + out));
-					}
 				}
-			
+			}
+
 			catch (Exception e) 
 			{
 				e.printStackTrace();
@@ -515,9 +514,9 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 	public void persistirGrafo()
 	{	
 		graph.persistirGrafo();
-		
+
 		cont++;
-		
+
 		try
 		{
 			File file = new File(".\\docs\\Leame.txt");
@@ -525,16 +524,16 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 				file.createNewFile();
 
 			FileWriter fileWriter = new FileWriter(".\\docs\\Leame.txt", true);
-	    	PrintWriter out = new PrintWriter(fileWriter);	
-	    	out.println("--------------------------------------------------------------------");
-	    	out.println(json);
-	    	out.println("Grafo " + cont);
-	    	out.println("Dx " + param);
-	    	out.println("Numero de vertices: " + graph.V());
-	    	out.println("Numero de arcos: " + graph.E());
-	    	
-	    	out.close();
-	    	fileWriter.close();
+			PrintWriter out = new PrintWriter(fileWriter);	
+			out.println("--------------------------------------------------------------------");
+			out.println(json);
+			out.println("Grafo " + cont);
+			out.println("Dx " + param);
+			out.println("Numero de vertices: " + graph.V());
+			out.println("Numero de arcos: " + graph.E());
+
+			out.close();
+			fileWriter.close();
 		}
 		catch(Exception e)
 		{
@@ -607,13 +606,13 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 					JSONObject infoEdgeObject = (JSONObject) edgeObject.get("informacionArco");
 
 					String trip_total = infoEdgeObject.get("trip_total") != null? (String) infoEdgeObject.get("trip_total"): "0.0";
-					String trip_seconds = infoEdgeObject.get("trip_seconds") != null? (String) infoEdgeObject.get("trip_seconds"): "0";
+					String trip_seconds = infoEdgeObject.get("trip_seconds") != null? (String) infoEdgeObject.get("trip_seconds"): "0.0";
 					String trip_miles = infoEdgeObject.get("trip_miles") != null? (String) infoEdgeObject.get("trip_miles"): "0.0";
 
 					String fuenteEdge = edgeObject.get("fuente")!=null? (String) edgeObject.get("fuente"): "No-Fuente";
 					String destinoEdge = edgeObject.get("destino")!=null? (String) edgeObject.get("destino"): "No-Destino";
 
-					InfoServicios aux = new InfoServicios(Double.parseDouble(trip_total), Double.parseDouble(trip_miles), Integer.parseInt(trip_seconds));
+					InfoServicios aux = new InfoServicios(Double.parseDouble(trip_total), Double.parseDouble(trip_miles), Double.parseDouble(trip_seconds));
 					graph.addEdge(fuenteEdge, destinoEdge, aux);
 
 				}
@@ -624,7 +623,57 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			e.printStackTrace();
 		} 
 		System.out.println("Número de arcos: " + graph.test());
-		System.out.println("Número de vertices: " + graph.test2());
 		System.out.println("Número de keys (vértices): " + graph.vertex().keys().size());
+		vertexMasCongestionado();
+	}
+
+	public Vertex vertexMasCongestionado()
+	{
+		Vertex vertice = null;
+		int comparador = 0;
+		Lista<Keys<String>> llaves = graph.vertex().keys();
+		for (int i = 0; i < llaves.size(); i++) 
+		{
+			Vertex auxVertex = graph.findVertex(llaves.get(i).getKey());
+			Lista edges = auxVertex.arcos();
+			int cantidadVertex = 0;
+
+			cantidadVertex = edges.size();
+
+			for (int j = 0; j < llaves.size(); j++) 
+			{
+				if(j!=i)
+				{
+					Vertex auxVertex2 = graph.findVertex(llaves.get(j).getKey());
+					Lista edges2 = auxVertex2.arcos();
+					for (int k = 0; k < edges2.size(); k++) {
+						Edge auxEdge = (Edge) edges2.get(k);
+
+						if(auxEdge.getDestino().equals(auxVertex))
+							cantidadVertex++;
+					}
+				}
+			}
+
+			if(cantidadVertex>comparador)
+			{
+				comparador = cantidadVertex;
+				vertice = auxVertex;
+			}
+
+		}	
+		return vertice;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
