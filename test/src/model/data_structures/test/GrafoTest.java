@@ -16,6 +16,7 @@ public class GrafoTest
 {
 	
 	private Graph<String, Integer, String> grafo;
+	private Graph<String, Integer, String> grafo2;
 	
 	@Before
 	public void testSetup( )
@@ -120,6 +121,61 @@ public class GrafoTest
 		
 		grafo.setInfoArc("vertice1", "vertice3", "holi");
 		assertEquals("Informacion incorrecta en el arco", "holi", ((Edge)edges.get(0)).getInfo());
+	}
+	
+	@Test
+	public 	void iterableAdjTest()
+	{
+		
+		Vertex arco = ((Vertex)grafo.vertex().get("vertice1"));
+		assertEquals("No retorno los identificadores de los vertices adyacentes", "1-2", ((Edge)arco.arcos().get(1)).getInfo() );
+		assertEquals("No retorno los identificadores de los vertices adyacentes", "1-3", ((Edge)arco.arcos().get(0)).getInfo() );
+	}
+	
+	@Test
+	public 	void graphReverseTest()
+	{	
+		String v1 = "vertice1";
+		int x1 = 1;
+		
+		String v2 = "vertice2";
+		int x2 = 2;
+		
+		String v3 = "vertice3";
+		int x3 = 3;
+		
+		grafo2 = new Graph<String, Integer, String>(3);
+		
+		grafo2.addVertex(v1, x1);
+		grafo2.addVertex(v2, x2);
+		grafo2.addVertex(v3, x3);
+		
+		grafo2.addEdge(v1, v2, "1-2");
+		grafo2.addEdge(v2, v3, "2-3");
+		grafo2.addEdge(v3, v2, "3-2");
+		grafo2.addEdge(v1, v3, "1-3");
+		Graph<String, Integer, String> grafoReverse = grafo2.reverse();
+		
+		assertEquals( "Tamaño incorrecto", 3 ,grafoReverse.V() );
+		assertEquals( "Tamaño incorrecto", 4 ,grafoReverse.E() );
+		
+		assertEquals("Informacion incorrecta dentro del vertice", 1, ((int)grafoReverse.getInfoVertex("vertice1")));
+		assertEquals("Informacion incorrecta dentro del vertice", 2, ((int)grafoReverse.getInfoVertex("vertice2")));
+			
+		assertEquals("Informacion incorrecta en el arco", "1-3", grafo2.getInfoArc("vertice1", "vertice3"));
+		assertEquals("Informacion incorrecta en el arco", "1-2", grafo2.getInfoArc("vertice1", "vertice2"));
+		
+		assertEquals("Informacion incorrecta en el arco", null, grafoReverse.getInfoArc("vertice1", "vertice3"));
+		assertEquals("Informacion incorrecta en el arco", null, grafoReverse.getInfoArc("vertice1", "vertice2"));
+		
+		assertEquals("Informacion incorrecta en el arco", "2-3", grafo2.getInfoArc("vertice2", "vertice3"));
+		assertEquals("Informacion incorrecta en el arco", "2-3", grafoReverse.getInfoArc("vertice3", "vertice2"));
+		//grafo2.depthFirstSearch();
+		Lista p = grafo2.depthFirstSearch();
+		for (int i = 0; i < p.size(); i++) 
+		{
+			System.out.println(((Vertex)p.get(i)).id());
+		}
 	}
 	
 

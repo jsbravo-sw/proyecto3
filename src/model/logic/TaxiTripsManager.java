@@ -664,6 +664,9 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		}	
 		return vertice;
 	}
+	
+	
+	
 }
 
 

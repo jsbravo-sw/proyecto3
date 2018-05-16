@@ -3,6 +3,7 @@ package model.data_structures;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -140,6 +141,10 @@ public class Graph <K extends Comparable<K>, V, A>{
 		{			
 			return marcado;		
 		}
+		public void setMarcado(boolean pMar)
+		{			
+			marcado = pMar;		
+		}
 		public int compareTo(Vertex v)
 		{
 			return idVertex.compareTo(v.id());
@@ -211,6 +216,64 @@ public class Graph <K extends Comparable<K>, V, A>{
 		}
 
 	}
+
+	public Graph<K,V,A> reverse()
+	{
+		Graph<K,V,A> reverse= new Graph<>(V());
+
+		Lista<Keys<K>> ver = adj.keys();
+
+		for (int i = 0; i < ver.size(); i++) {
+			Vertex auxVertex = findVertex(ver.get(i).getKey());
+			reverse.addVertex(auxVertex.id(), auxVertex.info());	
+		}
+
+		for (int i = 0; i < ver.size(); i++) {
+			Vertex auxVertex = findVertex(ver.get(i).getKey());
+			Lista<Edge> edges = auxVertex.arcos();
+
+			for (int j = 0; j < edges.size(); j++) {
+				Vertex vertexFin = edges.get(j).getDestino();
+				reverse.addEdge(vertexFin.id(), auxVertex.id(), edges.get(j).getInfo());
+			}
+		}
+
+		return reverse;
+	}
+
+	public Lista depthFirstSearch()
+	{
+		Lista<Vertex> newLista = new Lista();
+		Lista llaves = adj.keys();
+		for (int i = 0; i < llaves.size(); i++) {
+			//System.out.println(((Keys)llaves.get(i)).getKey());
+			Vertex v = adj.get((K)((Keys)llaves.get(i)).getKey());
+
+			if(!v.marcado())
+				DFSUtil(v,newLista);
+		}
+		
+		return newLista;
+	}
+
+	public void DFSUtil(Vertex v, Lista pLista)
+	{
+		v.setMarcado(true);
+		
+		// Recur for all the vertices adjacent to this vertex
+		for (int i = 0; i < adj.get(v.id()).arcos().size(); i++) {
+			Vertex aux = adj.get(v.id()).arcos().get(i).getDestino();
+			
+			if(!aux.marcado())
+			{
+				DFSUtil(aux,pLista);
+			}
+			
+		}
+		pLista.addAtEnd(v);
+		//System.out.print(v.id()+" ");
+	}
+
 	public int test()
 	{
 		return listaArcos.size();
@@ -231,7 +294,7 @@ public class Graph <K extends Comparable<K>, V, A>{
 		Edge temp = new Edge(v1,v2,null);
 		return findEdge(temp);
 	}
-	
+
 	public Edge findEdge(Edge pEdge)
 	{
 		for( int i = 0; i<listaArcos.size();i++)
@@ -275,17 +338,21 @@ public class Graph <K extends Comparable<K>, V, A>{
 	{
 		return ((Vertex)vertex().get(idVertex)).info();
 	}
-	
+
 	public A getInfoArc(K idVertexIni, K idVertexFin)
 	{
+		if(findEdge(idVertexIni, idVertexFin)==null)
+		{
+			return null;
+		}
 		return findEdge(idVertexIni, idVertexFin).getInfo();
 	}
-	
+
 	public Iterable <K> adj(K idVertex)
 	{
 		return (Iterable<K>) findVertex(idVertex).arcos();
 	}
-	
+
 	public void persistirGrafo()
 	{
 		JSONObject obj = new JSONObject();
@@ -312,7 +379,7 @@ public class Graph <K extends Comparable<K>, V, A>{
 
 				InfoServicios info = (InfoServicios) y.getInfo();
 				JSONObject informacionObj = new JSONObject();
-				
+
 				informacionObj.put("trip_total", String.valueOf(info.getTrip_total()));
 				informacionObj.put("trip_miles", String.valueOf(info.getTrip_miles()));
 				informacionObj.put("trip_seconds", String.valueOf(info.getTrip_seconds()));
@@ -325,7 +392,7 @@ public class Graph <K extends Comparable<K>, V, A>{
 
 			verticeInnerObj.put("Arcos", arrArcos);
 			verticeInnerObj.put("id", x.id());
-			
+
 			JSONObject servicioObj = new JSONObject();
 			Lista<Servicio> listaServicio = (Lista<Servicio>) x.info();
 			for (int j = 0; j < listaServicio.size(); j++) {
@@ -342,7 +409,7 @@ public class Graph <K extends Comparable<K>, V, A>{
 				servicioObj.put("dropOffZone", String.valueOf(listaServicio.get(j).getDropOffZone()));
 				servicioObj.put("tripMiles", String.valueOf(listaServicio.get(j).getTripMiles()));
 				servicioObj.put("tripTotal", String.valueOf(listaServicio.get(j).getTripTotal()));
-				
+
 			}
 			verticeInnerObj.put("informacionVertice", servicioObj);
 
