@@ -30,4 +30,9 @@ public class Controller
 	{
 		manager.leerGrafo(direccionJsonGraph);
 	}
+	
+	public static Lista componentesConexos()
+	{
+		return manager.componentesConexos();
+	}
 }

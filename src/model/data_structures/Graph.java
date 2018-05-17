@@ -261,11 +261,11 @@ public class Graph <K extends Comparable<K>, V, A>{
 		return newLista;
 	}
 
-	public void DFSUtil(Vertex v, Lista pLista)
+	private void DFSUtil(Vertex v, Lista pLista)
 	{
 		v.setMarcado(true);
 		pLista.addAtEnd(v);
-		// Recur for all the vertices adjacent to this vertex
+		
 		for (int i = 0; i < adj.get(v.id()).arcos().size(); i++) {
 			Vertex aux = adj.get(v.id()).arcos().get(i).getDestino();
 			
@@ -286,27 +286,30 @@ public class Graph <K extends Comparable<K>, V, A>{
 			
 			if(!aux.marcado())
 			{
-				aux.setMarcado(true);
-				for (int j = 0; j < adj.get(aux.id()).arcos().size(); j++) {
-					Vertex aux2 = adj.get(aux.id()).arcos().get(j).getFuente();
-					Vertex aux3 = adj.get(aux.id()).arcos().get(j).getDestino();
-					if(!aux3.marcado() && aux2.equals(aux))
-					{
-						aux3.setMarcado(true);
-						postOrden.add(aux3);
-					}
-					
-				}
-				postOrden.add(aux);
+				postOrdenUtil(aux, postOrden);
 			}
 		}
 		
 		for (int i = 0; i < visitar.size(); i++) {
-			//System.out.println(((Keys)llaves.get(i)).getKey());
 			Vertex v = visitar.get(i);
 			v.setMarcado(false);
 		}
 		return postOrden;
+	}
+	
+	private void postOrdenUtil(Vertex aux, Lista pLista)
+	{
+		aux.setMarcado(true);
+		for (int j = 0; j < adj.get(aux.id()).arcos().size(); j++) {
+			Vertex aux2 = adj.get(aux.id()).arcos().get(j).getFuente();
+			Vertex aux3 = adj.get(aux.id()).arcos().get(j).getDestino();
+			if(!aux3.marcado() && aux2.equals(aux))
+			{
+				postOrdenUtil(aux3,pLista);
+			}
+			
+		}
+		pLista.add(aux);
 	}
 
 	public ArbolBinarioRN depthFirstSearch(Lista<Vertex> pVisitar)
@@ -319,7 +322,7 @@ public class Graph <K extends Comparable<K>, V, A>{
 			//System.out.println(v.id());
 			if(!v.marcado())
 			{
-				DFSUtil2(v,newLista);
+				DFSUtil(v,newLista);
 				arbol.put(i, newLista);
 			}
 		}
@@ -330,21 +333,6 @@ public class Graph <K extends Comparable<K>, V, A>{
 			v.setMarcado(false);
 		}
 		return arbol;
-	}
-	
-	public void DFSUtil2(Vertex v, Lista pLista)
-	{
-		v.setMarcado(true);
-		pLista.addAtEnd(v);
-		for (int j = 0; j < adj.get(v.id()).arcos().size(); j++) {
-			Vertex aux3 = adj.get(v.id()).arcos().get(j).getDestino();
-			
-			if(!aux3.marcado())
-			{
-				DFSUtil2(aux3,pLista);
-			}	
-		}
-		//System.out.print(v.id()+" ");
 	}
 	
 	public int test()

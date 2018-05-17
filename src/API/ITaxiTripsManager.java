@@ -1,6 +1,7 @@
 package API;
 
 import model.data_structures.ArbolBinarioRN;
+import model.data_structures.Graph.Vertex;
 import model.data_structures.IList;
 import model.data_structures.Lista;
 import model.vo.Servicio;
@@ -23,5 +24,9 @@ public interface ITaxiTripsManager
 	public void persistirGrafo();
 	
 	public void leerGrafo(String direccionJsonGraph);
+	
+	public Vertex vertexMasCongestionado();
+	
+	public Lista componentesConexos();
 
 }

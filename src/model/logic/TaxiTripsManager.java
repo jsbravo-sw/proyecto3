@@ -12,12 +12,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import API.ITaxiTripsManager;
+import model.data_structures.ArbolBinarioRN;
 import model.data_structures.Graph;
 import model.data_structures.Graph.Edge;
 import model.data_structures.Graph.Vertex;
 import model.data_structures.Keys;
 import model.data_structures.Lista;
 import model.data_structures.SequentialSearch;
+import model.vo.CompFuertementeConexa;
 import model.vo.InfoServicios;
 import model.vo.Servicio;
 
@@ -665,7 +667,22 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		return vertice;
 	}
 	
-	
+	public Lista componentesConexos()
+	{
+		Lista newLista = new Lista();
+		
+		Graph grafoInvertido = graph.reverse();
+		ArbolBinarioRN arbol = graph.depthFirstSearch(grafoInvertido.darPostOrdenInvertido(grafoInvertido.depthFirstSearch()));
+		
+		Lista llaves = arbol.getKeys();
+		for (int i = 0; i < llaves.size(); i++) {
+			Lista aux = (Lista) arbol.get(llaves.get(i));
+			CompFuertementeConexa comp = new CompFuertementeConexa(aux);
+			newLista.add(comp);
+		}
+		
+		return newLista;
+	}
 	
 }
 

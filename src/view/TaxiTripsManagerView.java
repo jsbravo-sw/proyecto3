@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Color;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
@@ -8,8 +9,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import controller.Controller;
+import model.data_structures.Graph.Vertex;
 import model.data_structures.Lista;
 import model.logic.TaxiTripsManager;
+import model.vo.CompFuertementeConexa;
 import model.vo.Taxi;
 
 /**
@@ -89,6 +92,15 @@ public class TaxiTripsManagerView
 					Controller.leerGrafo(direccionJsonGraph);
 					break;
 			case 3: 
+					Lista aux = Controller.componentesConexos();
+					System.out.println("Total de componenetes fuertemente conexas: " + aux.size());
+					for (int i = 0; i < aux.size(); i++) 
+					{
+						Color color = ((CompFuertementeConexa)aux.get(i)).getColorComponente();
+						System.out.println("Componente conexa " + (1+i) + ": " + "\n" + "Color de la componente(RGB): " + color.getRed() +"-" + color.getBlue()  + "-" + color.getGreen()  + "  Cantidad de vertices en la componente: " + ((CompFuertementeConexa)aux.get(i)).getTamañoComp());
+					}
+				break;
+			case 4: 
 				fin=true;
 				sc.close();
 				break;
@@ -101,12 +113,14 @@ public class TaxiTripsManagerView
 	 */
 	private static void printMenu() //
 	{
+		System.out.println(" ");
 		System.out.println("---------ISIS 1206 - Estructuras de datos----------");
 		System.out.println("---------------------Taller 7 ----------------------");
 		System.out.println("Iniciar la Fuente de Datos a Consultar :");
 		System.out.println("1. Cargar toda la informacion del sistema de una fuente de datos (small, medium o large).");
 		System.out.println("2. Cargar un grafo a partir de una fuente de datos.");
-		System.out.println("3. Salir");
+		System.out.println("3. Mostrar la informacion de las componentes fuertemente conexas.");
+		System.out.println("4. Salir");
 		System.out.println("Ingrese el numero de la opcion seleccionada y presione <Enter> para confirmar: (e.g., 1):");
 
 	}
