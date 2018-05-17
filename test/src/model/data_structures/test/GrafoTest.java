@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import model.data_structures.ArbolBinarioRN;
 import model.data_structures.Graph;
 import model.data_structures.Graph.Edge;
 import model.data_structures.Graph.Vertex;
@@ -144,20 +145,32 @@ public class GrafoTest
 		String v3 = "vertice3";
 		int x3 = 3;
 		
-		grafo2 = new Graph<String, Integer, String>(3);
+		String v4 = "vertice4";
+		int x4 = 4;
+		
+		String v5 = "vertice5";
+		int x5 = 5;
+		
+		grafo2 = new Graph<String, Integer, String>(5);
 		
 		grafo2.addVertex(v1, x1);
 		grafo2.addVertex(v2, x2);
 		grafo2.addVertex(v3, x3);
+		grafo2.addVertex(v4, x4);
+		grafo2.addVertex(v5, x5);
 		
 		grafo2.addEdge(v1, v2, "1-2");
 		grafo2.addEdge(v2, v3, "2-3");
 		grafo2.addEdge(v3, v2, "3-2");
 		grafo2.addEdge(v1, v3, "1-3");
+		grafo2.addEdge(v3, v4, "3-4");
+		grafo2.addEdge(v4, v2, "4-2");
+		grafo2.addEdge(v1, v5, "1-5");
+		grafo2.addEdge(v5, v1, "5-1");
 		Graph<String, Integer, String> grafoReverse = grafo2.reverse();
 		
-		assertEquals( "Tamaño incorrecto", 3 ,grafoReverse.V() );
-		assertEquals( "Tamaño incorrecto", 4 ,grafoReverse.E() );
+		assertEquals( "Tamaño incorrecto", 5 ,grafoReverse.V() );
+		assertEquals( "Tamaño incorrecto", 8 ,grafoReverse.E() );
 		
 		assertEquals("Informacion incorrecta dentro del vertice", 1, ((int)grafoReverse.getInfoVertex("vertice1")));
 		assertEquals("Informacion incorrecta dentro del vertice", 2, ((int)grafoReverse.getInfoVertex("vertice2")));
@@ -171,10 +184,23 @@ public class GrafoTest
 		assertEquals("Informacion incorrecta en el arco", "2-3", grafo2.getInfoArc("vertice2", "vertice3"));
 		assertEquals("Informacion incorrecta en el arco", "2-3", grafoReverse.getInfoArc("vertice3", "vertice2"));
 		//grafo2.depthFirstSearch();
-		Lista p = grafo2.depthFirstSearch();
-		for (int i = 0; i < p.size(); i++) 
-		{
-			System.out.println(((Vertex)p.get(i)).id());
+		Lista p = grafoReverse.depthFirstSearch();
+		Lista postOrden = grafoReverse.darPostOrdenInvertido(p);
+		ArbolBinarioRN arbol = grafo2.depthFirstSearch(postOrden);
+		for (int i = 0; i < p.size(); i++) {
+			//System.out.println(((Vertex)p.get(i)).id());
+		}
+		for (int i = 0; i < postOrden.size(); i++) {
+			//System.out.println(((Vertex)postOrden.get(i)).id());
+		}
+		
+		for (int i = 0; i < arbol.getKeys().size(); i++) {
+			Lista aux = (Lista) arbol.get(arbol.getKeys().get(i));
+			//System.out.println(arbol.getKeys().size());
+			for (int j = 0; j < aux.size(); j++) {
+				System.out.println(((Vertex)aux.get(j)).id() + " " + i);
+			}
+			
 		}
 	}
 	
