@@ -1,0 +1,237 @@
+/**
+	 * Sets all states to UNVISITED
+	 */
+	private void clearStates()
+	{
+		for (Vertex each : vertices)
+		{
+			each.state = State.UNVISITED;
+		}
+	}
+
+	/**
+	 * Test if DFS or BFS returned a connected graph
+	 * @return true if connected, false if not.
+	 */
+	public boolean isConnected()
+	{
+		for (Vertex each : vertices)
+		{
+			if (each.state != State.COMPLETE)
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Performs a recursive Depth First Search on the
+	 * 'root' node (the first vertex created)
+	 * @return true if connected, false if empty or not connected
+	 */
+	public boolean DepthFirstSearch()
+	{
+		if (vertices.isEmpty()) return false;
+
+		clearStates();
+		// get first node
+		Vertex root = vertices.get(0);
+		if (root==null) return false;
+
+		// call recursive function
+		DepthFirstSearch(root);
+		return isConnected();
+	}
+
+	/**
+	 * Helper for Depth first search
+	 * @param v vertex
+	 */
+	private void DepthFirstSearch(Vertex v)
+	{
+		v.state = State.VISITED;
+
+		// loop through neighbors
+		for (Vertex each : v.outgoing)
+		{
+			if (each.state ==State.UNVISITED)
+			{
+				DepthFirstSearch(each);
+			}
+		}
+		v.state = State.COMPLETE;
+	}
+
+	/**
+	 * Performs a Breadth-First Search
+	 * starting at 'root' node (First created vertex)
+	 * @return true is connected, false is not or if empty
+	 */
+	public boolean BreadthFirstSearch()
+	{
+		if (vertices.isEmpty()) return false;
+		clearStates();
+
+		Vertex root = vertices.get(0);
+		if (root==null) return false;
+
+		Queue<Vertex> queue = new LinkedList<>();
+		queue.add(root);
+		root.state = State.COMPLETE;
+
+		while (!queue.isEmpty())
+		{
+			root = queue.peek();
+			for (Vertex each : root.outgoing)
+			{
+
+				if (each.state==State.UNVISITED)
+				{
+					each.state = State.COMPLETE;
+					queue.add(each);
+				}
+			}
+			queue.remove();
+		}
+		return isConnected();
+	}
+
+	/**
+	 * Perfoms a Breadth-First Search on a given starting vertex
+	 * @param v1 Value of type T for starting vertex
+	 * @return true if connected, false if not or if empty
+	 */
+	public boolean BreadthFirstSearch(T v1)
+	{
+		if (vertices.isEmpty()) return false;
+		clearStates();
+
+		Vertex root = findVertex(v1);
+		if (root==null) return false;
+
+		Queue<Vertex> queue = new LinkedList<>();
+		queue.add(root);
+		root.state = State.COMPLETE;
+
+		while (!queue.isEmpty())
+		{
+			root = queue.peek();
+			for (Vertex each : root.outgoing)
+			{
+
+				if (each.state==State.UNVISITED)
+				{
+					each.state = State.COMPLETE;
+					queue.add(each);
+				}
+			}
+			queue.remove();
+		}
+		return isConnected();
+	}
+
+	/**
+	 * Creates path information on the graph using the Dijkstra Algorithm,
+	 * Puts the information into the Vertices, based on given starting vertex.
+	 * @param v1 Value of type T for starting vertex
+	 * @return true if successfull, false if empty or not found.
+	 */
+	private boolean Dijkstra(T v1)
+	{
+		if (vertices.isEmpty()) return false;
+
+		// reset all vertices minDistance and previous
+		resetDistances();
+
+		// make sure it is valid
+		Vertex source = findVertex(v1);
+		if (source==null) return false;
+
+		// set to 0 and add to heap
+		source.minDistance = 0;
+		PriorityQueue<Vertex> pq = new PriorityQueue<>();
+		pq.add(source);
+
+		while (!pq.isEmpty())
+		{
+			//pull off top of queue
+			Vertex u = pq.poll();
+
+			// loop through adjacent vertices
+			for (Vertex v : u.outgoing)
+			{
+				// get edge
+				Edge e = findEdge(u, v);
+				if (e==null) return false;
+				// add cost to current
+				int totalDistance = u.minDistance + e.cost;
+				if (totalDistance < v.minDistance)
+				{
+					// new cost is smaller, set it and add to queue
+					pq.remove(v);
+					v.minDistance = totalDistance;
+					// link vertex
+					v.previous = u;
+					pq.add(v);
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Goes through the result tree created by the Dijkstra method
+	 * and steps backward
+	 * @param target Vertex end of path
+	 * @return string List of vertices and costs
+	 */
+	private Lista<String> getShortestPath(Vertex target)
+	{
+		Lista<String> path = new Lista<String>();
+
+		// check for no path found
+		if (target.minDistance==Integer.MAX_VALUE)
+		{
+			path.add("No path found");
+			return path;
+		}
+
+		// loop through the vertices from end target 
+		for (Vertex v = target; v !=null; v = v.previous)
+		{
+			path.add(v.value + " : cost : " + v.minDistance);
+		}
+
+		// flip the list
+		Collections.reverse(path);
+		return path;
+	}
+
+	/**
+	 * for Dijkstra, resets all the path tree fields
+	 */
+	private void resetDistances()
+	{
+		for (Vertex each : vertices)
+		{
+			each.minDistance = Integer.MAX_VALUE;
+			each.previous = null;
+		}
+	}
+
+	/**
+	 * PUBLIC WRAPPER FOR PRIVATE FUNCTIONS
+	 * Calls the Dijkstra method to build the path tree for the given
+	 * starting vertex, then calls getShortestPath method to return
+	 * a list containg all the steps in the shortest path to
+	 * the destination vertex.
+	 * @param from value of type T for Vertex 'from'
+	 * @param to value of type T for vertex 'to'
+	 * @return ArrayList of type String of the steps in the shortest path.
+	 */
+	public Lista<String> getPath(T from, T to)
+	{
+		boolean test = Dijkstra(from);
+		if (test==false) return null;
+		Lista<String> path = getShortestPath(findVertex(to));
+		return path;
+	}

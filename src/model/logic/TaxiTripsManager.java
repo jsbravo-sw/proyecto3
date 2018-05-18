@@ -22,6 +22,7 @@ import model.data_structures.SequentialSearch;
 import model.vo.CompFuertementeConexa;
 import model.vo.InfoServicios;
 import model.vo.Servicio;
+import model.vo.VerticeConServicios;
 
 public class TaxiTripsManager implements ITaxiTripsManager {
 	public static final String DIRECCION_SMALL_JSON = "./data/taxi-trips-wrvz-psew-subset-small.json";
@@ -31,6 +32,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 	//String que representa la lat/long del vertice y la lista sus servicios asociados
 	@JsonProperty
 	public Graph<String, Lista<Servicio>, InfoServicios> graph;
+	public Graph<String, VerticeConServicios, InfoServicios> graphString;
 	public int param;
 
 	private int cont = 0;
@@ -683,12 +685,230 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		
 		return newLista;
 	}
-	
+
+
+
+public boolean cargarSistemaV2(String direccionJson, int pParam) 
+{
+	JSONParser parser = new JSONParser();
+	graphString = new Graph<String, VerticeConServicios, InfoServicios>(500);
+	param = pParam;
+	int out =0;
+	if (!direccionJson.equals(DIRECCION_LARGE_JSON))
+	{
+
+		if(direccionJson.equals(DIRECCION_MEDIUM_JSON))
+			json = "Medium";
+		else
+			json = "Small";
+		try 
+		{
+			Object obj = parser.parse(new FileReader(direccionJson));
+			JSONArray serviceList = (JSONArray) obj;
+			for (int i = 0; serviceList != null && i < serviceList.size(); i++)
+			{
+
+				JSONObject jsonObject = (JSONObject) serviceList.get(i);
+				String pickup_centroid_latitude = jsonObject.get("pickup_centroid_latitude") != null? (String) jsonObject.get("pickup_centroid_latitude"):"0.0";
+				String pickup_centroid_longitude = jsonObject.get("pickup_centroid_longitude") != null? (String) jsonObject.get("pickup_centroid_longitude"):"0.0";
+				String dropoff_centroid_latitude = jsonObject.get("dropoff_centroid_latitude") != null? (String) jsonObject.get("dropoff_centroid_latitude"):"0.0";
+				String dropoff_centroid_longitude = jsonObject.get("dropoff_centroid_longitude") != null? (String) jsonObject.get("dropoff_centroid_longitude"):"0.0";
+
+				//Si algun servicio no tiene definidas lat/long de recogida y terminacionm, salte a la siguiente iteracion
+				if (Double.parseDouble(pickup_centroid_latitude)==0.0 || Double.parseDouble(pickup_centroid_longitude)==0.0 || Double.parseDouble(dropoff_centroid_latitude)==0.0 || Double.parseDouble(dropoff_centroid_longitude)==0.0 )
+				{
+					out++;
+					System.out.println("*******Salte*******");
+					continue;
+
+				}
+
+				String company =  jsonObject.get("company") != null? (String) jsonObject.get("company"):"Independent Owner";
+				String dropoff_community_area = jsonObject.get("dropoff_community_area") != null? (String) jsonObject.get("dropoff_community_area"): "0";
+				String pickup_community_area =  jsonObject.get("pickup_community_area") != null? (String) jsonObject.get("pickup_community_area"):"0";
+				String taxi_id =  jsonObject.get("taxi_id") != null? (String) jsonObject.get("taxi_id"):"No-ID";
+				String trip_end_timestamp =  jsonObject.get("trip_end_timestamp") != null? (String) jsonObject.get("trip_end_timestamp"):"0000-00-00T00:00:00.000";
+				String trip_id =  jsonObject.get("trip_id") != null? (String) jsonObject.get("trip_id"):"No-TripID";
+				String trip_miles =  jsonObject.get("trip_miles") != null? (String) jsonObject.get("trip_miles"):"0";
+				String trip_seconds =  jsonObject.get("trip_seconds") != null? (String) jsonObject.get("trip_seconds"):"0";
+				String trip_start_timestamp =  jsonObject.get("trip_start_timestamp") != null? (String) jsonObject.get("trip_start_timestamp"):"0000-00-00T00:00:00.000";
+				String trip_total=  jsonObject.get("trip_total") != null? (String) jsonObject.get("trip_total"):"0.0";
+
+
+				String pickUpId = pickup_centroid_latitude + "/" + pickup_centroid_longitude;
+				String dropOffId = dropoff_centroid_latitude + "/" + dropoff_centroid_longitude;
+
+				Servicio newServicio = new Servicio (trip_id, taxi_id, Integer.parseInt(trip_seconds),Double.parseDouble(trip_miles), Double.parseDouble(trip_total), trip_start_timestamp, trip_end_timestamp,Integer.parseInt(pickup_community_area), Integer.parseInt(dropoff_community_area),pickup_centroid_latitude, pickup_centroid_longitude);
+
+				//Si está vacío el grafo
+				if (graphString.vertex().data()==0)
+				{
+					VerticeConServicios auxSalida = new VerticeConServicios(Double.parseDouble(pickup_centroid_latitude), Double.parseDouble(pickup_centroid_longitude));
+					auxSalida.agregarServicioQueSale(trip_id);
+					graphString.addVertex(pickUpId, auxSalida);
+					
+					
+					
+					VerticeConServicios auxLlegada = new VerticeConServicios(Double.parseDouble(dropoff_centroid_latitude), Double.parseDouble(dropoff_centroid_longitude));
+					auxLlegada.agregarServicioQueLlega(trip_id);
+					graphString.addVertex(dropOffId, auxLlegada);
+					
+					
+					InfoServicios infoArc = new InfoServicios (newServicio, pickUpId, dropOffId);
+					graphString.addEdge(pickUpId,dropOffId, infoArc);
+
+				}
+				//El grafo ya tiene vertices
+				else
+				{
+					String elInicial = null;
+					String elFinal = null;
+
+
+					//Variables repetidas en inicio y final
+					double menor = Double.MAX_VALUE;
+					String elMenor = "";
+					//La zona inicial pertenece a *algún* vértice existente?
+					Lista<String> yoPertenezcoASalida = new Lista<String>();
+					Lista<String> yoPertenezcoALlegada = new Lista<String>();
+
+					String aEsteVerticeSalida = "";
+					String aEsteVerticeLlegada = "";
+
+					for (int h = 0; h< graphString.vertex().keys().size();h++)
+					{
+						//Si la distancia es menor al parametro, entonces pertenece a ese vertice
+						//							System.out.println("-> For que recorre todas las llaves");
+						//							System.out.println("Tamanio: " + graphString.vertex().keys().size());
+						//							System.out.println("Llave: " + graphString.vertex().keys().get(h).getKey());
+						if (getDistance(Double.parseDouble(graphString.vertex().keys().get(h).getKey().split("/")[0]),Double.parseDouble(graphString.vertex().keys().get(h).getKey().split("/")[1]), Double.parseDouble(pickup_centroid_latitude), Double.parseDouble(pickup_centroid_longitude))<=param)
+						{
+							//TODO: Agregar a una lista todos los vertices a los que pertenece, recorrer toda la lista y buscar cual tiene menor distancia.
+							yoPertenezcoASalida.addAtEnd(graphString.vertex().keys().get(h).getKey());	
+							aEsteVerticeSalida = graphString.vertex().keys().get(h).getKey();
+							//System.out.println("**El inicial pertenece a: " + aEsteVertice + "**");
+						}
+						if (getDistance(Double.parseDouble(graphString.vertex().keys().get(h).getKey().split("/")[0]),Double.parseDouble(graphString.vertex().keys().get(h).getKey().split("/")[1]), Double.parseDouble(dropoff_centroid_latitude), Double.parseDouble(dropoff_centroid_longitude))<=param)
+						{
+							yoPertenezcoALlegada.addAtEnd(graphString.vertex().keys().get(h).getKey());	
+							aEsteVerticeLlegada = graphString.vertex().keys().get(h).getKey();
+						
+						}
+					}
+					//						System.out.println("recorri todos los vertices y comprobe pertenencia del inicial <-");
+					//						System.out.println("Yo (el inicial) pertenezco a " + yoPertenezcoA.size());
+					if (yoPertenezcoASalida.size()==0)
+					{
+						//Si no pertenece a ningun vertice por la distancia de parametro, entonces es un vertice nuevo
+						//	System.out.println("-> Caso donde no pertenece a ningun vertice (inicial)");
+						VerticeConServicios auxSalida = new VerticeConServicios(Double.parseDouble(pickup_centroid_latitude), Double.parseDouble(pickup_centroid_longitude));
+						auxSalida.agregarServicioQueSale(trip_id);
+						graphString.addVertex(pickUpId, auxSalida);
+						
+						elInicial = pickUpId;
+						//.out.println("cree el vertice, añadi el servicio <-");
+
+					}
+					else if (yoPertenezcoASalida.size()==1)
+					{
+						graphString.findVertex(aEsteVerticeSalida).info().agregarServicioQueSale(trip_id);
+						elInicial = aEsteVerticeSalida;
+					}
+					else if (yoPertenezcoASalida.size()>1)
+					{
+						//getDistance(Double.parseDouble(graphString.vertex().keys().get(0).getKey().split("-")[0]),Double.parseDouble(graphString.vertex().keys().get(0).getKey().split("-")[1]), Double.parseDouble(pickup_centroid_latitude), Double.parseDouble(pickup_centroid_longitude));
+
+						for (int w=0;w<yoPertenezcoASalida.size();w++)
+						{
+							//Comparo las distancias
+							
+							if (menor>getDistance(Double.parseDouble(yoPertenezcoASalida.get(w).split("/")[0]), Double.parseDouble(yoPertenezcoASalida.get(w).split("/")[1]),Double.parseDouble(pickup_centroid_latitude), Double.parseDouble(pickup_centroid_longitude)))
+							{
+								menor = getDistance(Double.parseDouble(yoPertenezcoASalida.get(w).split("/")[0]), Double.parseDouble(yoPertenezcoASalida.get(w).split("/")[1]),Double.parseDouble(pickup_centroid_latitude), Double.parseDouble(pickup_centroid_longitude));
+								elMenor = yoPertenezcoASalida.get(w);
+							}
+
+						}
+						//Encontre el vertice con menor distancia desde el servicio, pertenece a ese vertice
+						elInicial = elMenor;
+						graphString.findVertex(elInicial).info().agregarServicioQueSale(trip_id);
+					}
+					
+					//__________________________________________________________
+
+					if (yoPertenezcoALlegada.size()==0)
+					{
+						VerticeConServicios auxLlegada = new VerticeConServicios(Double.parseDouble(dropoff_centroid_latitude), Double.parseDouble(dropoff_centroid_longitude));
+						auxLlegada.agregarServicioQueLlega(trip_id);
+						graphString.addVertex(dropOffId, auxLlegada);
+						
+						elFinal = dropOffId;
+
+					}
+					
+					else if (yoPertenezcoALlegada.size()==1)
+					{
+						graphString.findVertex(aEsteVerticeLlegada).info().agregarServicioQueLlega(trip_id);
+						elFinal = aEsteVerticeLlegada;
+					}
+					//TODO: Revision añadir servicio a donde llego
+					if (yoPertenezcoALlegada.size()>1)
+					{
+						for (int w= 0; w<yoPertenezcoALlegada.size();w++)
+						{
+							if (menor>getDistance(Double.parseDouble(yoPertenezcoALlegada.get(w).split("/")[0]), Double.parseDouble(yoPertenezcoALlegada.get(w).split("/")[1]),Double.parseDouble(dropoff_centroid_latitude), Double.parseDouble(dropoff_centroid_longitude)))
+							{
+								menor = getDistance(Double.parseDouble(yoPertenezcoALlegada.get(w).split("/")[0]), Double.parseDouble(yoPertenezcoALlegada.get(w).split("/")[1]),Double.parseDouble(dropoff_centroid_latitude), Double.parseDouble(dropoff_centroid_longitude));
+								elMenor = yoPertenezcoALlegada.get(w);
+							}
+						}
+						elFinal = elMenor;
+						graphString.findVertex(elFinal).info().agregarServicioQueLlega(trip_id);
+					}
+
+					if (graphString.findEdge(elInicial, elFinal)!=null)
+					{
+						graphString.findEdge(elInicial, elFinal).getInfo().addServicio(newServicio);
+					}
+					else
+					{
+						InfoServicios infoArc = new InfoServicios(newServicio, elInicial, elFinal);
+						graphString.addEdge(elInicial, elFinal,infoArc);
+					}
+
+				}
+
+				System.out.println("Iteracion "+ i);
+				System.out.println("Número de arcos: " + graphString.test());
+				System.out.println("Número de vértices: " + graphString.vertex().keys().size());
+			}
+			int sum = 0;
+			for (int i=0;i<graphString.vertex().keys().size();i++)
+			{
+				//			System.out.println("Cantidad de servicios en el vertice " +(i+1)  +": " + graphString.vertex().get(graphString.vertex().keys().get(i).getKey()).info().size());
+				sum+=graphString.vertex().get(graphString.vertex().keys().get(i).getKey()).info().numeroServiciosQueLlegan();
+			System.out.println("Total de servicios: " + sum);
+			System.out.println("Total de servicios saltados por lat/long vacias: " + out);
+			System.out.println("Total neto: " + (sum + out));
+
+		}
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		} 
+
+		persistirGrafo();
+		System.out.println("Inside loadServices with " + direccionJson);
+		return true;
+	}
+	else
+	{
+		json = "Large";
+		return true;
+	}
 }
-
-
-
-
+}
 
 
 
