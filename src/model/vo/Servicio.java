@@ -8,8 +8,9 @@ public class Servicio implements Comparable<Servicio>
 	private String tripId,taxiId,fechaInicio,fechaFinal,horaInicial,horaFinal, pickUpLatitud,pickUpLongitud, vertexInicialId, vertexFinalId;
 	private int tripSeconds, pickUpZone, dropOffZone;
 	private double tripMiles,tripTotal, distanciaHarvesiana;
+	private boolean peaje;
 
-	public Servicio (String pTripId, String pTaxiId, int pTripSeconds, double pTripMiles, double pTripTotal, String pTripStartTimeStamp, String pTripEndTimeStamp, int pPickupZone, int pDropOffZone, String pPickupLatitud, String pPickupLongitud)
+	public Servicio (String pTripId, String pTaxiId, int pTripSeconds, double pTripMiles, double pTripTotal, String pTripStartTimeStamp, String pTripEndTimeStamp, int pPickupZone, int pDropOffZone, String pPickupLatitud, String pPickupLongitud, boolean pPeaje)
 	{
 		tripId = pTripId;
 		taxiId = pTaxiId;
@@ -29,6 +30,8 @@ public class Servicio implements Comparable<Servicio>
 		String[] y = pTripEndTimeStamp.split("T");
 		fechaFinal = y[0];
 		horaFinal = y[1];
+		
+		setPeaje(pPeaje);
 
 	}
 	/**
@@ -138,5 +141,11 @@ public class Servicio implements Comparable<Servicio>
 	}
 	public void setVertexFinalId(String vertexFinalId) {
 		this.vertexFinalId = vertexFinalId;
+	}
+	public boolean isPeaje() {
+		return peaje;
+	}
+	public void setPeaje(boolean peaje) {
+		this.peaje = peaje;
 	}
 }

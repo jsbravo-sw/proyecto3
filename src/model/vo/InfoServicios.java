@@ -7,7 +7,9 @@ public class InfoServicios implements Comparable<InfoServicios>
 	private String vertexInicialId, vertexFinalId;
 	private double trip_total, trip_miles;
 	private double  trip_seconds;
-	private int cantidadServicios=0;
+	private int cantidadServicios;
+	private boolean peaje=false;
+	
 	public InfoServicios(double pTripTotal, double pTripMiles, double pTripSeconds)
 	{
 		trip_miles = pTripMiles;
@@ -22,6 +24,7 @@ public class InfoServicios implements Comparable<InfoServicios>
 		trip_seconds = pServicio.getTripSeconds();
 		vertexInicialId = pInicial;
 		vertexFinalId = pFinal;
+		peaje = pServicio.isPeaje(); 
 		cantidadServicios++;
 	}
 	public double getTrip_total() {
@@ -61,6 +64,7 @@ public class InfoServicios implements Comparable<InfoServicios>
 		trip_miles+= pServicio.getTripMiles();
 		trip_total+=pServicio.getTripTotal();
 		trip_seconds+=pServicio.getTripSeconds();
+		peaje = peaje != true ? pServicio.isPeaje() : true; 
 		
 	}
 
