@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/jackson-core-2.9.5.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-databind-2.9.5.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-mapper-asl-1.9.13.jar"/>
+	<classpathentry kind="lib" path="lib/org.apache.commons.io.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -4,6 +4,7 @@ package model.logic;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,6 +24,7 @@ import model.vo.CompFuertementeConexa;
 import model.vo.InfoServicios;
 import model.vo.Servicio;
 import model.vo.VerticeConServicios;
+import view.Maps;
 
 public class TaxiTripsManager implements ITaxiTripsManager {
 	public static final String DIRECCION_SMALL_JSON = "./data/taxi-trips-wrvz-psew-subset-small.json";
@@ -1112,6 +1114,18 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			}
 			return true;
 		}
+	}
+	
+	
+	public void verReq1()
+	{
+		try {
+	        File f = new File(Maps.mapaReq1);
+	        java.awt.Desktop.getDesktop().browse(f.toURI());
+	    } catch (IOException e) 
+	        {
+	            e.printStackTrace();
+			}
 	}
 }
 
