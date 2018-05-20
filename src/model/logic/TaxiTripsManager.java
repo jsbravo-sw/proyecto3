@@ -315,7 +315,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 
 						String pickUpId = pickup_centroid_latitude + "/" + pickup_centroid_longitude;
 						String dropOffId = dropoff_centroid_latitude + "/" + dropoff_centroid_longitude;
-						
+
 						boolean toll = jsonObject.get("tolls") != null? Double.parseDouble((String) jsonObject.get("tolls"))>0? true : false : false;
 
 						Servicio newServicio = new Servicio (trip_id, taxi_id, Integer.parseInt(trip_seconds),Double.parseDouble(trip_miles), Double.parseDouble(trip_total), trip_start_timestamp, trip_end_timestamp,Integer.parseInt(pickup_community_area), Integer.parseInt(dropoff_community_area),pickup_centroid_latitude, pickup_centroid_longitude, toll);
@@ -580,9 +580,9 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 				String tripId =  infoVertexObject.get("tripId") != null? (String) infoVertexObject.get("tripId"): "No-TripId";
 				String taxiId =  infoVertexObject.get("taxiId") != null? (String) infoVertexObject.get("taxiId"): "No-TaxiId";
 				String tripSeconds =  infoVertexObject.get("tripSeconds") != null? (String) infoVertexObject.get("tripSeconds"): "0";
-				
+
 				boolean toll = jsonObject.get("tolls") != null? Double.parseDouble((String) jsonObject.get("tolls"))>0? true : false : false;
-				
+
 				Lista<Servicio> listServiciosVertex = new Lista<Servicio>();
 				Servicio newServicio = new Servicio(tripId, taxiId, Integer.parseInt(tripSeconds), Double.parseDouble(tripMiles), Double.parseDouble(tripTotal), fechaInicio+"T"+horaInicial, fechaFinal+"T"+horaFinal, Integer.parseInt(pickUpZone), Integer.parseInt(dropOffZone), pickUpLatitud, pickUpLongitud, toll);
 				if(graph.findVertex(vertexId)!=null)
@@ -739,7 +739,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 					String trip_seconds =  jsonObject.get("trip_seconds") != null? (String) jsonObject.get("trip_seconds"):"0";
 					String trip_start_timestamp =  jsonObject.get("trip_start_timestamp") != null? (String) jsonObject.get("trip_start_timestamp"):"0000-00-00T00:00:00.000";
 					String trip_total=  jsonObject.get("trip_total") != null? (String) jsonObject.get("trip_total"):"0.0";
-					
+
 					boolean toll = jsonObject.get("tolls") != null? Double.parseDouble((String) jsonObject.get("tolls"))>0? true : false : false;
 
 					String pickUpId = pickup_centroid_latitude + "/" + pickup_centroid_longitude;
@@ -1115,17 +1115,42 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			return true;
 		}
 	}
-	
-	
-	public void verReq1()
+
+
+	public void verReq1(double lat, double lon)
 	{
+
+		Maps.mapaReq1(lat, lon);
+
+		//Abrir el mapa en el explorador
 		try {
-	        File f = new File(Maps.mapaReq1);
-	        java.awt.Desktop.getDesktop().browse(f.toURI());
-	    } catch (IOException e) 
-	        {
-	            e.printStackTrace();
+			File f = new File(Maps.mapaReq1);
+			java.awt.Desktop.getDesktop().browse(f.toURI());
+		} catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	public void verReq4(Lista<VerticeConServicios> lista)
+	{
+
+		if (lista.size()!=0)
+		{
+			Maps.mapaReq4(lista);
+
+			//Abrir el mapa en el explorador
+			try 
+			{
+				File f = new File(Maps.mapaReq4);
+				java.awt.Desktop.getDesktop().browse(f.toURI());
+			} catch (IOException e) 
+			{
+				e.printStackTrace();
 			}
+		}
+
 	}
 }
 
