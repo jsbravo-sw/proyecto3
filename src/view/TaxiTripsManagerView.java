@@ -91,7 +91,14 @@ public class TaxiTripsManagerView
 					String direccionJsonGraph = ".\\data\\graph.json";
 					Controller.leerGrafo(direccionJsonGraph);
 					break;
-			case 3: 
+			case 3:
+				Vertex aux2 = Controller.verticeMasCongestionado();
+				System.out.println(aux2.id());
+				Maps mapa = new Maps();
+				String[] id = ((String)aux2.id()).split("/");
+				mapa.mapaReq1(Double.parseDouble(id[0]), Double.parseDouble(id[1]));
+				break;
+			case 4: 
 					Lista aux = Controller.componentesConexos();
 					System.out.println("Total de componenetes fuertemente conexas: " + aux.size());
 					for (int i = 0; i < aux.size(); i++) 
@@ -100,7 +107,7 @@ public class TaxiTripsManagerView
 						System.out.println("Componente conexa " + (1+i) + ": " + "\n" + "Color de la componente(RGB): " + color.getRed() +"-" + color.getBlue()  + "-" + color.getGreen()  + "  Cantidad de vertices en la componente: " + ((CompFuertementeConexa)aux.get(i)).getTamañoComp());
 					}
 				break;
-			case 4: 
+			case 5: 
 				fin=true;
 				sc.close();
 				break;
@@ -119,8 +126,9 @@ public class TaxiTripsManagerView
 		System.out.println("Iniciar la Fuente de Datos a Consultar :");
 		System.out.println("1. Cargar toda la informacion del sistema de una fuente de datos (small, medium o large).");
 		System.out.println("2. Cargar un grafo a partir de una fuente de datos.");
-		System.out.println("3. Mostrar la informacion de las componentes fuertemente conexas.");
-		System.out.println("4. Salir");
+		System.out.println("3. Mostrar la informacion del vertice mas congestionado");
+		System.out.println("4. Mostrar la informacion de las componentes fuertemente conexas.");
+		System.out.println("5. Salir");
 		System.out.println("Ingrese el numero de la opcion seleccionada y presione <Enter> para confirmar: (e.g., 1):");
 
 	}

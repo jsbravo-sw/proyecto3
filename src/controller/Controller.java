@@ -4,6 +4,7 @@ import API.ITaxiTripsManager;
 import model.data_structures.ArbolBinarioRN;
 import model.data_structures.IList;
 import model.data_structures.Lista;
+import model.data_structures.Graph.Vertex;
 import model.logic.TaxiTripsManager;
 import model.vo.Servicio;
 import model.vo.Taxi;
@@ -34,5 +35,10 @@ public class Controller
 	public static Lista componentesConexos()
 	{
 		return manager.componentesConexos();
+	}
+	
+	public static Vertex verticeMasCongestionado()
+	{
+		return manager.vertexMasCongestionado();
 	}
 }
