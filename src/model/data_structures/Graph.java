@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import model.vo.InfoServicios;
 import model.vo.Servicio;
+import model.vo.VerticeConServicios;
 
 public class Graph <K extends Comparable<K>, V, A>{
 
@@ -454,25 +455,29 @@ public class Graph <K extends Comparable<K>, V, A>{
 			verticeInnerObj.put("Arcos", arrArcos);
 			verticeInnerObj.put("id", x.id());
 
-			JSONObject servicioObj = new JSONObject();
-			Lista<Servicio> listaServicio = (Lista<Servicio>) x.info();
-			for (int j = 0; j < listaServicio.size(); j++) {
-				servicioObj.put("tripId", String.valueOf(listaServicio.get(j).getTripId()));
-				servicioObj.put("taxiId", String.valueOf(listaServicio.get(j).getTaxiId()));
-				servicioObj.put("fechaInicio", String.valueOf(listaServicio.get(j).getFechaInicial()));
-				servicioObj.put("fechaFinal", String.valueOf(listaServicio.get(j).getFechaFinal()));
-				servicioObj.put("horaInicial", String.valueOf(listaServicio.get(j).getHoraInicial()));
-				servicioObj.put("horaFinal", String.valueOf(listaServicio.get(j).getHoraFinal()));
-				servicioObj.put("pickUpLatitud", String.valueOf(listaServicio.get(j).getPickupLatitud()));
-				servicioObj.put("pickUpLongitud", String.valueOf(listaServicio.get(j).getPickupLongitud()));
-				servicioObj.put("tripSeconds", String.valueOf(listaServicio.get(j).getTripSeconds()));
-				servicioObj.put("pickUpZone", String.valueOf(listaServicio.get(j).getPickupZone()));
-				servicioObj.put("dropOffZone", String.valueOf(listaServicio.get(j).getDropOffZone()));
-				servicioObj.put("tripMiles", String.valueOf(listaServicio.get(j).getTripMiles()));
-				servicioObj.put("tripTotal", String.valueOf(listaServicio.get(j).getTripTotal()));
-
+			VerticeConServicios vertice = (VerticeConServicios) x.info();		
+			JSONArray serviciosSalenObj = new JSONArray();
+			
+			for (int j = 0; j < vertice.numeroServiciosQueSalen(); j++) 
+			{
+				String servicioId = vertice.getServiciosQueSalen().get(j);
+				serviciosSalenObj.add(String.valueOf(servicioId));
+				
 			}
-			verticeInnerObj.put("informacionVertice", servicioObj);
+			JSONObject infoServicioObj = new JSONObject();
+			infoServicioObj.put("ServiciosQueSalen", serviciosSalenObj);
+			
+			JSONArray serviciosLleganObj = new JSONArray();
+			
+			for (int k = 0; k < vertice.numeroServiciosQueLlegan(); k++) 
+			{
+				String servicioId = vertice.getServiciosQueLlegan().get(k);
+				serviciosLleganObj.add(String.valueOf(servicioId));
+				
+			}
+			infoServicioObj.put("ServiciosQueLlegan", serviciosLleganObj);
+			
+			verticeInnerObj.put("informacionVertice", infoServicioObj);
 
 			verticeObj.put("vertice" + (llaves.size()-i), verticeInnerObj);
 			listaVertices.add(verticeObj);

@@ -8,6 +8,7 @@ import model.data_structures.Graph.Vertex;
 import model.logic.TaxiTripsManager;
 import model.vo.Servicio;
 import model.vo.Taxi;
+import model.vo.VerticeConServicios;
 
 public class Controller 
 {
@@ -37,8 +38,8 @@ public class Controller
 		return manager.componentesConexos();
 	}
 	
-	public static Vertex verticeMasCongestionado()
+	public static VerticeConServicios verticeMasCongestionado()
 	{
-		return manager.vertexMasCongestionado();
+		return manager.req1();
 	}
 }

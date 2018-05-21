@@ -6,6 +6,7 @@ import model.data_structures.IList;
 import model.data_structures.Lista;
 import model.vo.Servicio;
 import model.vo.Taxi;
+import model.vo.VerticeConServicios;
 
 /**
  * API para la clase de logica principal  
@@ -25,7 +26,7 @@ public interface ITaxiTripsManager
 	
 	public void leerGrafo(String direccionJsonGraph);
 	
-	public Vertex vertexMasCongestionado();
+	public VerticeConServicios req1();
 	
 	public Lista componentesConexos();
 

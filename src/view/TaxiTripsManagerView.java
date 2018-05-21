@@ -14,6 +14,7 @@ import model.data_structures.Lista;
 import model.logic.TaxiTripsManager;
 import model.vo.CompFuertementeConexa;
 import model.vo.Taxi;
+import model.vo.VerticeConServicios;
 
 /**
  * view del programa
@@ -92,11 +93,9 @@ public class TaxiTripsManagerView
 					Controller.leerGrafo(direccionJsonGraph);
 					break;
 			case 3:
-				Vertex aux2 = Controller.verticeMasCongestionado();
-				System.out.println(aux2.id());
-				Maps mapa = new Maps();
-				String[] id = ((String)aux2.id()).split("/");
-				mapa.mapaReq1(Double.parseDouble(id[0]), Double.parseDouble(id[1]));
+				VerticeConServicios aux2 = Controller.verticeMasCongestionado();
+				Maps.mapaReq1(aux2.getLatRef(), aux2.getLongRef());
+				System.out.println("latitud: " + aux2.getLatRef() + " longitud: " + aux2.getLongRef() + "\ntotal servicios que salieron: " + aux2.numeroServiciosQueSalen() + "\ntotal servicios que llegaron: " + aux2.numeroServiciosQueLlegan());
 				break;
 			case 4: 
 					Lista aux = Controller.componentesConexos();

@@ -10,7 +10,7 @@ import model.vo.VerticeConServicios;
 
 public class Maps {
 
-	public final static String direccionReq1 = "./data/templates/templateReq1.html";
+	public final static String direccionReq1 = "./data/templates/mapaReq1.html";
 
 	public final static String mapaReq1 = "./data/templates/mapaReq1.html";
 
@@ -29,7 +29,7 @@ public class Maps {
 	public static void mapaReq1(double lat, double lon){
 		System.out.println("Se ha impreso el mapa");
 		try {
-			File htmlTemplateFile = new File(direccionReq1);
+			File htmlTemplateFile = new File(mapaReq1);
 			String htmlString;
 			htmlString = FileUtils.readFileToString(htmlTemplateFile);
 			String scriptTag = "var myLatLng = {lat: "+lat+", lng: "+lon+"};" + 
@@ -38,9 +38,10 @@ public class Maps {
 					"    map: map," + 
 					"    title: 'Vertice mas congestionado'" + 
 					"  });";
+			
 			htmlString = htmlString.replace("//$script", scriptTag);
 			File newHtmlFile = new File(mapaReq1);
-			FileUtils.writeStringToFile(newHtmlFile, htmlString);		
+			FileUtils.writeStringToFile(newHtmlFile, htmlString);	
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
