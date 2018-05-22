@@ -249,8 +249,8 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			{
 				e.printStackTrace();
 			} 
-			verReq4();
-			//	persistirGrafo();
+			
+			persistirGrafo();
 			System.out.println("Inside loadServices with " + direccionJson);
 			return true;
 		}
@@ -649,24 +649,32 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		return newLista;
 	}
 
-	public void verReq4()
+	public void verReq4(boolean pRun)
 	{
+		if (!pRun)
+		{
+			System.out.println("El camino a seguir entre los dos puntos es: ");
+		}
 		Lista<String> caminoVertices = req4();
 		Lista <VerticeConServicios> lista = new Lista<VerticeConServicios>();
 		for (int i=0;i<caminoVertices.size();i++)
 		{
+			
 			if (!caminoVertices.get(i).contains("No"))
 			{
+				
 				double lat = Double.parseDouble(caminoVertices.get(i).split("/")[0]);
 				double lon = Double.parseDouble(caminoVertices.get(i).split("/")[1]);
+				double distancia = Double.parseDouble(caminoVertices.get(i).split("/")[3]);
 				VerticeConServicios aux = new VerticeConServicios(lat, lon);
+				System.out.println("Vértice:" + lat +"/" + lon + " con distancia de: " + distancia);
+				System.out.println();
 				lista.addAtEnd(aux);
-				System.out.println("agregue");
 			}
 		}
 		if (lista.size()==0)
 		{
-			verReq4();
+			verReq4(true);
 		}
 
 

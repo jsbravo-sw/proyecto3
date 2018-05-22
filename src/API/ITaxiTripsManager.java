@@ -32,4 +32,6 @@ public interface ITaxiTripsManager
 	
 	public int getCantidadServicios();
 
+	public void verReq4(boolean pRun);
+
 }

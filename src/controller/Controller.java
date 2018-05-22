@@ -47,4 +47,9 @@ public class Controller
 	{
 		return manager.getCantidadServicios();
 	}
+
+	public static void verReq4() {
+		manager.verReq4(false);
+		
+	}
 }

@@ -110,7 +110,7 @@ public class Maps {
 			//TODO: Definir arcos
 			
 		scriptTag = "";
-		for (int i=0;i<lista.size()/2;i++)
+		for (int i=0;i<(lista.size()/2)+1;i++)
 		{
 			scriptTag  += "var line" + (i) + " = new google.maps.Polyline({ path: [{lat:" + lista.get(i).getLatRef() + ", lng:" + lista.get(i).getLongRef() + "}, {lat:" + lista.get(i+1).getLatRef() + ", lng:" +  lista.get(i+1).getLongRef()+ "}],icons: [{icon: lineSymbol,offset: '100%'}],map: map});";
 		}

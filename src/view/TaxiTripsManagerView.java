@@ -121,7 +121,10 @@ public class TaxiTripsManagerView
 						Maps.mapaReq2(verticesServicios.getLatRef(), verticesServicios.getLongRef(), verticesServicios.numeroServiciosTotal(), Controller.getCantidadServicios(), i, verticesComp.getColorComponente() );
 					}
 				break;
-			case 5: 
+			case 5:
+				Controller.verReq4();
+				break;
+			case 8: 
 				fin=true;
 				sc.close();
 				break;
@@ -136,13 +139,16 @@ public class TaxiTripsManagerView
 	{
 		System.out.println(" ");
 		System.out.println("---------ISIS 1206 - Estructuras de datos----------");
-		System.out.println("---------------------Taller 7 ----------------------");
+		System.out.println("--------------------- Proyecto 3 ----------------------");
 		System.out.println("Iniciar la Fuente de Datos a Consultar :");
 		System.out.println("1. Cargar toda la informacion del sistema de una fuente de datos (small, medium o large).");
 		System.out.println("2. Cargar un grafo a partir de una fuente de datos.");
 		System.out.println("3. Mostrar la informacion del vertice mas congestionado");
 		System.out.println("4. Mostrar la informacion de las componentes fuertemente conexas.");
-		System.out.println("5. Salir");
+		System.out.println("5. Encontrar camino de menor distancia para dos puntos aleatorios.");
+		System.out.println("6. Hallar caminos de mayor y menor duracion entre dos puntos aleatorios.");
+		System.out.println("7. Encontrar caminos sin peaje entre dos puntos aleatorios.");
+		System.out.println("8. Salir");
 		System.out.println("Ingrese el numero de la opcion seleccionada y presione <Enter> para confirmar: (e.g., 1):");
 
 	}
