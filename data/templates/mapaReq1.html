@@ -22,14 +22,14 @@
     <div id="map"></div>
     <script>
  	function initMap() {
-        var myLatLng = {lat: -25.363, lng: 131.044};
+        var myLatLng = {lat: 41.8809, lng: -87.63};
 
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
+          zoom: 12,
           center: myLatLng
         });
             
-        var myLatLng = {lat: 41.880994471, lng: -87.632746489};var marker = new google.maps.Marker({    position: myLatLng,    map: map,    title: 'Vertice mas congestionado'  });      var citymap = {chicago: {center: {lat: 41.880994471, lng: -87.632746489},population: 0.33507552870090634}};
+        var myLatLng = {lat: 41.880994471, lng: -87.632746489};var marker = new google.maps.Marker({    position: myLatLng,    map: map,    title: 'Vertice mas congestionado'  });      var citymap = {chicago: {center: {lat: 41.880994471, lng: -87.632746489},population: 33.507552870090635}};
         
         // Construct the circle for each value in citymap.
         // Note: We scale the area of the circle based on the population.
@@ -43,7 +43,7 @@
             fillOpacity: 0.35,
             map: map,
             center: citymap[city].center,
-            radius: (citymap[city].population) * 100
+            radius: Math.sqrt(citymap[city].population) * 100
           });
         }
       }

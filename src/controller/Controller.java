@@ -33,12 +33,12 @@ public class Controller
 		manager.leerGrafo(direccionJsonGraph);
 	}
 	
-	public static Lista componentesConexos()
+	public static Lista req2()
 	{
 		return manager.req2();
 	}
 	
-	public static VerticeConServicios verticeMasCongestionado()
+	public static VerticeConServicios req1()
 	{
 		return manager.req1();
 	}

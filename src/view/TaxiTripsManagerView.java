@@ -93,17 +93,32 @@ public class TaxiTripsManagerView
 					Controller.leerGrafo(direccionJsonGraph);
 					break;
 			case 3:
-				VerticeConServicios aux2 = Controller.verticeMasCongestionado();
+				VerticeConServicios aux2 = Controller.req1();
 				Maps.mapaReq1(aux2.getLatRef(), aux2.getLongRef(), aux2.numeroServiciosTotal(), Controller.getCantidadServicios());
 				System.out.println("latitud: " + aux2.getLatRef() + " longitud: " + aux2.getLongRef() + "\ntotal servicios que salieron: " + aux2.numeroServiciosQueSalen() + "\ntotal servicios que llegaron: " + aux2.numeroServiciosQueLlegan());
 				break;
 			case 4: 
-					Lista aux = Controller.componentesConexos();
+					Lista aux = Controller.req2();
 					System.out.println("Total de componenetes fuertemente conexas: " + aux.size());
+					CompFuertementeConexa verticesComp = null;
+					int comparador = 0;
 					for (int i = 0; i < aux.size(); i++) 
 					{
-						Color color = ((CompFuertementeConexa)aux.get(i)).getColorComponente();
-						System.out.println("Componente conexa " + (1+i) + ": " + "\n" + "Color de la componente(RGB): " + color.getRed() +"-" + color.getBlue()  + "-" + color.getGreen()  + "  Cantidad de vertices en la componente: " + ((CompFuertementeConexa)aux.get(i)).getTamañoComp());
+						if(((CompFuertementeConexa)aux.get(i)).getTamañoComp()>comparador)
+						{
+							comparador = ((CompFuertementeConexa)aux.get(i)).getTamañoComp();
+							verticesComp = (CompFuertementeConexa)aux.get(i);
+						}
+						String color = ((CompFuertementeConexa)aux.get(i)).getColorComponente();
+						System.out.println("Componente conexa " + (1+i) + ": " + "\n" + "Color de la componente: " + color + "  Cantidad de vertices en la componente: " + ((CompFuertementeConexa)aux.get(i)).getTamañoComp());
+					}
+					
+					Lista aux3 = verticesComp.getListaVertices();
+					for (int i = 0; i < aux3.size(); i++) 
+					{
+						Vertex ver = (Vertex) aux3.get(i);
+						VerticeConServicios verticesServicios = (VerticeConServicios) ver.info();
+						Maps.mapaReq2(verticesServicios.getLatRef(), verticesServicios.getLongRef(), verticesServicios.numeroServiciosTotal(), Controller.getCantidadServicios(), i, verticesComp.getColorComponente() );
 					}
 				break;
 			case 5: 

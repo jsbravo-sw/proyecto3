@@ -14,7 +14,7 @@ public class Maps {
 
 	public final static String mapaReq1 = "./data/templates/mapaReq1.html";
 
-	public final static String direccionReq2 = "./data/templates/templateReq2.html";
+	public final static String mapaReq2 = "./data/templates/mapaReq2.html";
 
 	public final static String direccionReq3 = "./data/templates/templateReq3.html";
 
@@ -27,7 +27,7 @@ public class Maps {
 	public final static String direccionReq6 = "./data/templates/templateReq6.html";
 
 	public static void mapaReq1(double lat, double lon, int pPopulation, int pTotalPopulation){
-		System.out.println("Se ha impreso el mapa" + pPopulation + "  " + pTotalPopulation);
+		System.out.println("Se ha impreso el mapa");
 		try {
 			File htmlTemplateFile = new File(direccionReq1);
 			String htmlString;
@@ -41,11 +41,45 @@ public class Maps {
 					"      var citymap = {"
         + "chicago: {"
           +"center: {lat: 41.880994471, lng: -87.632746489},"
-          +"population: " + ((double)pPopulation/pTotalPopulation)
+          +"population: " + (((double)pPopulation/pTotalPopulation)*100)
         +"}};";
 			
 			htmlString = htmlString.replace("//$script", scriptTag);
 			File newHtmlFile = new File(mapaReq1);
+			FileUtils.writeStringToFile(newHtmlFile, htmlString);	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void mapaReq2(double lat, double lon, int pPopulation, int pTotalPopulation, int pIdentificador, String pColor){
+		//System.out.println("Se ha impreso el mapa");
+		try {
+			File htmlTemplateFile = new File(mapaReq2);
+			String htmlString;
+			htmlString = FileUtils.readFileToString(htmlTemplateFile);
+			//System.out.println(htmlString);
+			String scriptTag = "var myLatLng"+pIdentificador+" = {lat: "+lat+", lng: "+lon+"};" + 
+					"var marker"+pIdentificador+" = new google.maps.Marker({" + 
+					"    position: myLatLng"+pIdentificador+"," + 
+					"    map: map," + 
+					"    title: 'Vertice"+pIdentificador+"'" + 
+					"  });"+
+					"\n\n //$scriptVertices";
+
+			String scriptTag2 ="chicago"+pIdentificador+" : {"+
+					"center: myLatLng"+pIdentificador+","+
+					"population: " + (((double)pPopulation/pTotalPopulation)*100)+
+					"}, /*$scriptCirculos*/";
+			String scriptTag3 = "'"+pColor+"'";
+			
+			htmlString = htmlString.replace("//$scriptVertices", scriptTag);
+			htmlString = htmlString.replace("/*$scriptCirculos*/", scriptTag2);
+			htmlString = htmlString.replace("/*color*/", scriptTag3);
+			htmlString = htmlString.replace("/*color2*/", scriptTag3);
+			htmlString = htmlString.replace("//$scriptLineas", scriptTag3);
+			File newHtmlFile = new File(mapaReq2);
 			FileUtils.writeStringToFile(newHtmlFile, htmlString);	
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

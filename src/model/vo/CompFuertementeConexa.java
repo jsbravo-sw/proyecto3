@@ -3,19 +3,18 @@ package model.vo;
 import java.awt.Color;
 import java.util.Random;
 
-import model.data_structures.Graph.Vertex;
 import model.data_structures.Lista;
 
 public class CompFuertementeConexa implements Comparable<CompFuertementeConexa>
 {
 	private Lista listaVertices;
-	private Color colorComponente;
+	private String colorComponente;
 	private int tamañoLista;
 
 	public CompFuertementeConexa(Lista pLista) 
 	{
 		listaVertices = pLista;
-		colorComponente = randomColor();
+		colorComponente = "#"+Integer.toHexString(randomColor().getRGB()).substring(2);;
 		tamañoLista = pLista.size();
 	}
 	
@@ -34,7 +33,7 @@ public class CompFuertementeConexa implements Comparable<CompFuertementeConexa>
 		return listaVertices;
 	}
 	
-	public Color getColorComponente()
+	public String getColorComponente()
 	{
 		return colorComponente;
 	}
