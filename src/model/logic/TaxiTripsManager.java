@@ -1,6 +1,7 @@
 package model.logic;
 
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -481,28 +482,28 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 	public void persistirGrafo()
 	{	
 		graph.persistirGrafo();
-//		try
-//		{
-//			File file = new File(".\\docs\\Leame.txt");
-//			if(!file.exists())
-//				file.createNewFile();
-//
-//			FileWriter fileWriter = new FileWriter(".\\docs\\Leame.txt", true);
-//			PrintWriter out = new PrintWriter(fileWriter);	
-//			out.println("--------------------------------------------------------------------");
-//			out.println(json);
-//			out.println("Grafo " + 1);
-//			out.println("Dx " + param);
-//			out.println("Numero de vertices: " + graphString.V());
-//			out.println("Numero de arcos: " + graphString.E());
-//
-//			out.close();
-//			fileWriter.close();
-//		}
-//		catch(Exception e)
-//		{
-//			e.printStackTrace();
-//		}
+		//		try
+		//		{
+		//			File file = new File(".\\docs\\Leame.txt");
+		//			if(!file.exists())
+		//				file.createNewFile();
+		//
+		//			FileWriter fileWriter = new FileWriter(".\\docs\\Leame.txt", true);
+		//			PrintWriter out = new PrintWriter(fileWriter);	
+		//			out.println("--------------------------------------------------------------------");
+		//			out.println(json);
+		//			out.println("Grafo " + 1);
+		//			out.println("Dx " + param);
+		//			out.println("Numero de vertices: " + graphString.V());
+		//			out.println("Numero de arcos: " + graphString.E());
+		//
+		//			out.close();
+		//			fileWriter.close();
+		//		}
+		//		catch(Exception e)
+		//		{
+		//			e.printStackTrace();
+		//		}
 	}
 
 	@Override
@@ -590,16 +591,16 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 	{
 		int cantidad = 0;
 		Lista<Keys<String>> llaves = graph.vertex().keys();
-		
+
 		for (int i = 0; i < llaves.size(); i++) 
 		{
 			VerticeConServicios auxVer = graph.findVertex(llaves.get(i).getKey()).info();
 			cantidad += auxVer.numeroServiciosQueSalen();
 		}
-		
+
 		return cantidad;
 	}
-	
+
 	public VerticeConServicios req1()
 	{
 		VerticeConServicios vertice = null;
@@ -666,6 +667,53 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			}
 		}
 
+	}
+
+	public Lista<String> cargarAleatorio() 
+	{
+		Lista<String> resp = new Lista<String>();
+		try 
+		{
+			FileReader fr = new FileReader(new File("data/Chicago Streets.csv"));
+			BufferedReader br = new BufferedReader(fr);
+			br.readLine();
+			String l = br.readLine();
+
+			String posicionesCalle[];
+			double latitude = 0;
+			double longitude = 0;
+
+			while(l != null && !l.contains("MULTILINESTRING EMPTY"))
+			{
+				String[] arreglo = l.split(";");
+
+				posicionesCalle = new String[arreglo.length-6];
+				for (int i = 6; i < arreglo.length; i++) 
+				{
+					if(i > 6)
+					{
+						arreglo[i] = arreglo[i].substring(1, arreglo[i].length());
+					}
+					posicionesCalle[i-6] = arreglo[i];
+					latitude = Double.parseDouble(posicionesCalle[i-6].split(" ")[1]);
+					longitude = Double.parseDouble(posicionesCalle[i-6].split(" ")[0]);
+					resp.addAtEnd(latitude + ";" + longitude);
+				}
+
+				l = br.readLine();
+			}
+
+
+			fr.close();
+			br.close();
+			return resp;
+
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
 
