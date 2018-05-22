@@ -94,7 +94,7 @@ public class TaxiTripsManagerView
 					break;
 			case 3:
 				VerticeConServicios aux2 = Controller.verticeMasCongestionado();
-				Maps.mapaReq1(aux2.getLatRef(), aux2.getLongRef());
+				Maps.mapaReq1(aux2.getLatRef(), aux2.getLongRef(), aux2.numeroServiciosTotal(), Controller.getCantidadServicios());
 				System.out.println("latitud: " + aux2.getLatRef() + " longitud: " + aux2.getLongRef() + "\ntotal servicios que salieron: " + aux2.numeroServiciosQueSalen() + "\ntotal servicios que llegaron: " + aux2.numeroServiciosQueLlegan());
 				break;
 			case 4: 

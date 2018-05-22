@@ -10,7 +10,7 @@ import model.vo.VerticeConServicios;
 
 public class Maps {
 
-	public final static String direccionReq1 = "./data/templates/mapaReq1.html";
+	public final static String direccionReq1 = "./data/templates/templateReq1.html";
 
 	public final static String mapaReq1 = "./data/templates/mapaReq1.html";
 
@@ -26,10 +26,10 @@ public class Maps {
 
 	public final static String direccionReq6 = "./data/templates/templateReq6.html";
 
-	public static void mapaReq1(double lat, double lon){
-		System.out.println("Se ha impreso el mapa");
+	public static void mapaReq1(double lat, double lon, int pPopulation, int pTotalPopulation){
+		System.out.println("Se ha impreso el mapa" + pPopulation + "  " + pTotalPopulation);
 		try {
-			File htmlTemplateFile = new File(mapaReq1);
+			File htmlTemplateFile = new File(direccionReq1);
 			String htmlString;
 			htmlString = FileUtils.readFileToString(htmlTemplateFile);
 			String scriptTag = "var myLatLng = {lat: "+lat+", lng: "+lon+"};" + 
@@ -37,7 +37,12 @@ public class Maps {
 					"    position: myLatLng," + 
 					"    map: map," + 
 					"    title: 'Vertice mas congestionado'" + 
-					"  });";
+					"  });"+
+					"      var citymap = {"
+        + "chicago: {"
+          +"center: {lat: 41.880994471, lng: -87.632746489},"
+          +"population: " + ((double)pPopulation/pTotalPopulation)
+        +"}};";
 			
 			htmlString = htmlString.replace("//$script", scriptTag);
 			File newHtmlFile = new File(mapaReq1);

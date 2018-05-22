@@ -33,16 +33,15 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 
 	//String que representa la lat/long del vertice y la lista sus servicios asociados
 	@JsonProperty
-	public Graph<String, VerticeConServicios, InfoServicios> graphString;
+	public Graph<String, VerticeConServicios, InfoServicios> graph;
 	public int param;
 
-	private int cont = 0;
 	private String json;
 
 	public boolean cargarSistema(String direccionJson, int pParam) 
 	{
 		JSONParser parser = new JSONParser();
-		graphString = new Graph<String, VerticeConServicios, InfoServicios>(500);
+		graph = new Graph<String, VerticeConServicios, InfoServicios>(500);
 		param = pParam;
 		int out =0;
 		if (!direccionJson.equals(DIRECCION_LARGE_JSON))
@@ -93,21 +92,21 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 					Servicio newServicio = new Servicio (trip_id, taxi_id, Integer.parseInt(trip_seconds),Double.parseDouble(trip_miles), Double.parseDouble(trip_total), trip_start_timestamp, trip_end_timestamp,Integer.parseInt(pickup_community_area), Integer.parseInt(dropoff_community_area),pickup_centroid_latitude, pickup_centroid_longitude, toll);
 
 					//Si está vacío el grafo
-					if (graphString.vertex().data()==0)
+					if (graph.vertex().data()==0)
 					{
 						VerticeConServicios auxSalida = new VerticeConServicios(Double.parseDouble(pickup_centroid_latitude), Double.parseDouble(pickup_centroid_longitude));
 						auxSalida.agregarServicioQueSale(trip_id);
-						graphString.addVertex(pickUpId, auxSalida);
+						graph.addVertex(pickUpId, auxSalida);
 
 
 
 						VerticeConServicios auxLlegada = new VerticeConServicios(Double.parseDouble(dropoff_centroid_latitude), Double.parseDouble(dropoff_centroid_longitude));
 						auxLlegada.agregarServicioQueLlega(trip_id);
-						graphString.addVertex(dropOffId, auxLlegada);
+						graph.addVertex(dropOffId, auxLlegada);
 
 
 						InfoServicios infoArc = new InfoServicios (newServicio, pickUpId, dropOffId);
-						graphString.addEdge(pickUpId,dropOffId, infoArc);
+						graph.addEdge(pickUpId,dropOffId, infoArc);
 
 					}
 					//El grafo ya tiene vertices
@@ -127,23 +126,23 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 						String aEsteVerticeSalida = "";
 						String aEsteVerticeLlegada = "";
 
-						for (int h = 0; h< graphString.vertex().keys().size();h++)
+						for (int h = 0; h< graph.vertex().keys().size();h++)
 						{
 							//Si la distancia es menor al parametro, entonces pertenece a ese vertice
 							//							System.out.println("-> For que recorre todas las llaves");
 							//							System.out.println("Tamanio: " + graphString.vertex().keys().size());
 							//							System.out.println("Llave: " + graphString.vertex().keys().get(h).getKey());
-							if (getDistance(Double.parseDouble(graphString.vertex().keys().get(h).getKey().split("/")[0]),Double.parseDouble(graphString.vertex().keys().get(h).getKey().split("/")[1]), Double.parseDouble(pickup_centroid_latitude), Double.parseDouble(pickup_centroid_longitude))<=param)
+							if (getDistance(Double.parseDouble(graph.vertex().keys().get(h).getKey().split("/")[0]),Double.parseDouble(graph.vertex().keys().get(h).getKey().split("/")[1]), Double.parseDouble(pickup_centroid_latitude), Double.parseDouble(pickup_centroid_longitude))<=param)
 							{
 								//TODO: Agregar a una lista todos los vertices a los que pertenece, recorrer toda la lista y buscar cual tiene menor distancia.
-								yoPertenezcoASalida.addAtEnd(graphString.vertex().keys().get(h).getKey());	
-								aEsteVerticeSalida = graphString.vertex().keys().get(h).getKey();
+								yoPertenezcoASalida.addAtEnd(graph.vertex().keys().get(h).getKey());	
+								aEsteVerticeSalida = graph.vertex().keys().get(h).getKey();
 								//System.out.println("**El inicial pertenece a: " + aEsteVertice + "**");
 							}
-							if (getDistance(Double.parseDouble(graphString.vertex().keys().get(h).getKey().split("/")[0]),Double.parseDouble(graphString.vertex().keys().get(h).getKey().split("/")[1]), Double.parseDouble(dropoff_centroid_latitude), Double.parseDouble(dropoff_centroid_longitude))<=param)
+							if (getDistance(Double.parseDouble(graph.vertex().keys().get(h).getKey().split("/")[0]),Double.parseDouble(graph.vertex().keys().get(h).getKey().split("/")[1]), Double.parseDouble(dropoff_centroid_latitude), Double.parseDouble(dropoff_centroid_longitude))<=param)
 							{
-								yoPertenezcoALlegada.addAtEnd(graphString.vertex().keys().get(h).getKey());	
-								aEsteVerticeLlegada = graphString.vertex().keys().get(h).getKey();
+								yoPertenezcoALlegada.addAtEnd(graph.vertex().keys().get(h).getKey());	
+								aEsteVerticeLlegada = graph.vertex().keys().get(h).getKey();
 
 							}
 						}
@@ -155,7 +154,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 							//	System.out.println("-> Caso donde no pertenece a ningun vertice (inicial)");
 							VerticeConServicios auxSalida = new VerticeConServicios(Double.parseDouble(pickup_centroid_latitude), Double.parseDouble(pickup_centroid_longitude));
 							auxSalida.agregarServicioQueSale(trip_id);
-							graphString.addVertex(pickUpId, auxSalida);
+							graph.addVertex(pickUpId, auxSalida);
 
 							elInicial = pickUpId;
 							//.out.println("cree el vertice, añadi el servicio <-");
@@ -163,7 +162,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 						}
 						else if (yoPertenezcoASalida.size()==1)
 						{
-							graphString.findVertex(aEsteVerticeSalida).info().agregarServicioQueSale(trip_id);
+							graph.findVertex(aEsteVerticeSalida).info().agregarServicioQueSale(trip_id);
 							elInicial = aEsteVerticeSalida;
 						}
 						else if (yoPertenezcoASalida.size()>1)
@@ -183,7 +182,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 							}
 							//Encontre el vertice con menor distancia desde el servicio, pertenece a ese vertice
 							elInicial = elMenor;
-							graphString.findVertex(elInicial).info().agregarServicioQueSale(trip_id);
+							graph.findVertex(elInicial).info().agregarServicioQueSale(trip_id);
 						}
 
 						//__________________________________________________________
@@ -192,7 +191,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 						{
 							VerticeConServicios auxLlegada = new VerticeConServicios(Double.parseDouble(dropoff_centroid_latitude), Double.parseDouble(dropoff_centroid_longitude));
 							auxLlegada.agregarServicioQueLlega(trip_id);
-							graphString.addVertex(dropOffId, auxLlegada);
+							graph.addVertex(dropOffId, auxLlegada);
 
 							elFinal = dropOffId;
 
@@ -200,7 +199,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 
 						else if (yoPertenezcoALlegada.size()==1)
 						{
-							graphString.findVertex(aEsteVerticeLlegada).info().agregarServicioQueLlega(trip_id);
+							graph.findVertex(aEsteVerticeLlegada).info().agregarServicioQueLlega(trip_id);
 							elFinal = aEsteVerticeLlegada;
 						}
 						//TODO: Revision añadir servicio a donde llego
@@ -215,17 +214,17 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 								}
 							}
 							elFinal = elMenor;
-							graphString.findVertex(elFinal).info().agregarServicioQueLlega(trip_id);
+							graph.findVertex(elFinal).info().agregarServicioQueLlega(trip_id);
 						}
 
-						if (graphString.findEdge(elInicial, elFinal)!=null)
+						if (graph.findEdge(elInicial, elFinal)!=null)
 						{
-							graphString.findEdge(elInicial, elFinal).getInfo().addServicio(newServicio);
+							graph.findEdge(elInicial, elFinal).getInfo().addServicio(newServicio);
 						}
 						else
 						{
 							InfoServicios infoArc = new InfoServicios(newServicio, elInicial, elFinal);
-							graphString.addEdge(elInicial, elFinal,infoArc);
+							graph.addEdge(elInicial, elFinal,infoArc);
 						}
 
 					}
@@ -235,10 +234,10 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 					//System.out.println("Número de vértices: " + graphString.vertex().keys().size());
 				}
 				int sum = 0;
-				for (int i=0;i<graphString.vertex().keys().size();i++)
+				for (int i=0;i<graph.vertex().keys().size();i++)
 				{
 					//			System.out.println("Cantidad de servicios en el vertice " +(i+1)  +": " + graphString.vertex().get(graphString.vertex().keys().get(i).getKey()).info().size());
-					sum+=graphString.vertex().get(graphString.vertex().keys().get(i).getKey()).info().numeroServiciosQueLlegan();
+					sum+=graph.vertex().get(graph.vertex().keys().get(i).getKey()).info().numeroServiciosQueLlegan();
 					System.out.println("Total de servicios: " + sum);
 					System.out.println("Total de servicios saltados por lat/long vacias: " + out);
 					System.out.println("Total neto: " + (sum + out));
@@ -299,21 +298,21 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 						Servicio newServicio = new Servicio (trip_id, taxi_id, Integer.parseInt(trip_seconds),Double.parseDouble(trip_miles), Double.parseDouble(trip_total), trip_start_timestamp, trip_end_timestamp,Integer.parseInt(pickup_community_area), Integer.parseInt(dropoff_community_area),pickup_centroid_latitude, pickup_centroid_longitude, toll);
 
 						//Si está vacío el grafo
-						if (graphString.vertex().data()==0)
+						if (graph.vertex().data()==0)
 						{
 							VerticeConServicios auxSalida = new VerticeConServicios(Double.parseDouble(pickup_centroid_latitude), Double.parseDouble(pickup_centroid_longitude));
 							auxSalida.agregarServicioQueSale(trip_id);
-							graphString.addVertex(pickUpId, auxSalida);
+							graph.addVertex(pickUpId, auxSalida);
 
 
 
 							VerticeConServicios auxLlegada = new VerticeConServicios(Double.parseDouble(dropoff_centroid_latitude), Double.parseDouble(dropoff_centroid_longitude));
 							auxLlegada.agregarServicioQueLlega(trip_id);
-							graphString.addVertex(dropOffId, auxLlegada);
+							graph.addVertex(dropOffId, auxLlegada);
 
 
 							InfoServicios infoArc = new InfoServicios (newServicio, pickUpId, dropOffId);
-							graphString.addEdge(pickUpId,dropOffId, infoArc);
+							graph.addEdge(pickUpId,dropOffId, infoArc);
 
 						}
 						//El grafo ya tiene vertices
@@ -333,23 +332,23 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 							String aEsteVerticeSalida = "";
 							String aEsteVerticeLlegada = "";
 
-							for (int h = 0; h< graphString.vertex().keys().size();h++)
+							for (int h = 0; h< graph.vertex().keys().size();h++)
 							{
 								//Si la distancia es menor al parametro, entonces pertenece a ese vertice
 								//							System.out.println("-> For que recorre todas las llaves");
 								//							System.out.println("Tamanio: " + graphString.vertex().keys().size());
 								//							System.out.println("Llave: " + graphString.vertex().keys().get(h).getKey());
-								if (getDistance(Double.parseDouble(graphString.vertex().keys().get(h).getKey().split("/")[0]),Double.parseDouble(graphString.vertex().keys().get(h).getKey().split("/")[1]), Double.parseDouble(pickup_centroid_latitude), Double.parseDouble(pickup_centroid_longitude))<=param)
+								if (getDistance(Double.parseDouble(graph.vertex().keys().get(h).getKey().split("/")[0]),Double.parseDouble(graph.vertex().keys().get(h).getKey().split("/")[1]), Double.parseDouble(pickup_centroid_latitude), Double.parseDouble(pickup_centroid_longitude))<=param)
 								{
 									//TODO: Agregar a una lista todos los vertices a los que pertenece, recorrer toda la lista y buscar cual tiene menor distancia.
-									yoPertenezcoASalida.addAtEnd(graphString.vertex().keys().get(h).getKey());	
-									aEsteVerticeSalida = graphString.vertex().keys().get(h).getKey();
+									yoPertenezcoASalida.addAtEnd(graph.vertex().keys().get(h).getKey());	
+									aEsteVerticeSalida = graph.vertex().keys().get(h).getKey();
 									//System.out.println("**El inicial pertenece a: " + aEsteVertice + "**");
 								}
-								if (getDistance(Double.parseDouble(graphString.vertex().keys().get(h).getKey().split("/")[0]),Double.parseDouble(graphString.vertex().keys().get(h).getKey().split("/")[1]), Double.parseDouble(dropoff_centroid_latitude), Double.parseDouble(dropoff_centroid_longitude))<=param)
+								if (getDistance(Double.parseDouble(graph.vertex().keys().get(h).getKey().split("/")[0]),Double.parseDouble(graph.vertex().keys().get(h).getKey().split("/")[1]), Double.parseDouble(dropoff_centroid_latitude), Double.parseDouble(dropoff_centroid_longitude))<=param)
 								{
-									yoPertenezcoALlegada.addAtEnd(graphString.vertex().keys().get(h).getKey());	
-									aEsteVerticeLlegada = graphString.vertex().keys().get(h).getKey();
+									yoPertenezcoALlegada.addAtEnd(graph.vertex().keys().get(h).getKey());	
+									aEsteVerticeLlegada = graph.vertex().keys().get(h).getKey();
 
 								}
 							}
@@ -361,7 +360,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 								//	System.out.println("-> Caso donde no pertenece a ningun vertice (inicial)");
 								VerticeConServicios auxSalida = new VerticeConServicios(Double.parseDouble(pickup_centroid_latitude), Double.parseDouble(pickup_centroid_longitude));
 								auxSalida.agregarServicioQueSale(trip_id);
-								graphString.addVertex(pickUpId, auxSalida);
+								graph.addVertex(pickUpId, auxSalida);
 
 								elInicial = pickUpId;
 								//.out.println("cree el vertice, añadi el servicio <-");
@@ -369,7 +368,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 							}
 							else if (yoPertenezcoASalida.size()==1)
 							{
-								graphString.findVertex(aEsteVerticeSalida).info().agregarServicioQueSale(trip_id);
+								graph.findVertex(aEsteVerticeSalida).info().agregarServicioQueSale(trip_id);
 								elInicial = aEsteVerticeSalida;
 							}
 							else if (yoPertenezcoASalida.size()>1)
@@ -389,7 +388,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 								}
 								//Encontre el vertice con menor distancia desde el servicio, pertenece a ese vertice
 								elInicial = elMenor;
-								graphString.findVertex(elInicial).info().agregarServicioQueSale(trip_id);
+								graph.findVertex(elInicial).info().agregarServicioQueSale(trip_id);
 							}
 
 							//__________________________________________________________
@@ -398,7 +397,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 							{
 								VerticeConServicios auxLlegada = new VerticeConServicios(Double.parseDouble(dropoff_centroid_latitude), Double.parseDouble(dropoff_centroid_longitude));
 								auxLlegada.agregarServicioQueLlega(trip_id);
-								graphString.addVertex(dropOffId, auxLlegada);
+								graph.addVertex(dropOffId, auxLlegada);
 
 								elFinal = dropOffId;
 
@@ -406,7 +405,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 
 							else if (yoPertenezcoALlegada.size()==1)
 							{
-								graphString.findVertex(aEsteVerticeLlegada).info().agregarServicioQueLlega(trip_id);
+								graph.findVertex(aEsteVerticeLlegada).info().agregarServicioQueLlega(trip_id);
 								elFinal = aEsteVerticeLlegada;
 							}
 							//TODO: Revision añadir servicio a donde llego
@@ -421,17 +420,17 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 									}
 								}
 								elFinal = elMenor;
-								graphString.findVertex(elFinal).info().agregarServicioQueLlega(trip_id);
+								graph.findVertex(elFinal).info().agregarServicioQueLlega(trip_id);
 							}
 
-							if (graphString.findEdge(elInicial, elFinal)!=null)
+							if (graph.findEdge(elInicial, elFinal)!=null)
 							{
-								graphString.findEdge(elInicial, elFinal).getInfo().addServicio(newServicio);
+								graph.findEdge(elInicial, elFinal).getInfo().addServicio(newServicio);
 							}
 							else
 							{
 								InfoServicios infoArc = new InfoServicios(newServicio, elInicial, elFinal);
-								graphString.addEdge(elInicial, elFinal,infoArc);
+								graph.addEdge(elInicial, elFinal,infoArc);
 							}
 
 						}
@@ -441,10 +440,10 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 						//System.out.println("Número de vértices: " + graphString.vertex().keys().size());
 					}
 					int sum = 0;
-					for (int i=0;i<graphString.vertex().keys().size();i++)
+					for (int i=0;i<graph.vertex().keys().size();i++)
 					{
 						//			System.out.println("Cantidad de servicios en el vertice " +(i+1)  +": " + graphString.vertex().get(graphString.vertex().keys().get(i).getKey()).info().size());
-						sum+=graphString.vertex().get(graphString.vertex().keys().get(i).getKey()).info().numeroServiciosQueLlegan();
+						sum+=graph.vertex().get(graph.vertex().keys().get(i).getKey()).info().numeroServiciosQueLlegan();
 						System.out.println("Total de servicios: " + sum);
 						System.out.println("Total de servicios saltados por lat/long vacias: " + out);
 						System.out.println("Total neto: " + (sum + out));
@@ -481,39 +480,36 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 
 	public void persistirGrafo()
 	{	
-		graphString.persistirGrafo();
-
-		cont++;
-
-		try
-		{
-			File file = new File(".\\docs\\Leame.txt");
-			if(!file.exists())
-				file.createNewFile();
-
-			FileWriter fileWriter = new FileWriter(".\\docs\\Leame.txt", true);
-			PrintWriter out = new PrintWriter(fileWriter);	
-			out.println("--------------------------------------------------------------------");
-			out.println(json);
-			out.println("Grafo " + cont);
-			out.println("Dx " + param);
-			out.println("Numero de vertices: " + graphString.V());
-			out.println("Numero de arcos: " + graphString.E());
-
-			out.close();
-			fileWriter.close();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+		graph.persistirGrafo();
+//		try
+//		{
+//			File file = new File(".\\docs\\Leame.txt");
+//			if(!file.exists())
+//				file.createNewFile();
+//
+//			FileWriter fileWriter = new FileWriter(".\\docs\\Leame.txt", true);
+//			PrintWriter out = new PrintWriter(fileWriter);	
+//			out.println("--------------------------------------------------------------------");
+//			out.println(json);
+//			out.println("Grafo " + 1);
+//			out.println("Dx " + param);
+//			out.println("Numero de vertices: " + graphString.V());
+//			out.println("Numero de arcos: " + graphString.E());
+//
+//			out.close();
+//			fileWriter.close();
+//		}
+//		catch(Exception e)
+//		{
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override
 	public void leerGrafo(String direccionJsonGraph) {
 		// TODO Auto-generated method stub
 		JSONParser parser = new JSONParser();
-		graphString = new Graph<String, VerticeConServicios, InfoServicios>(500);
+		graph = new Graph<String, VerticeConServicios, InfoServicios>(500);
 		try 
 		{
 			Object obj = parser.parse(new FileReader(direccionJsonGraph));
@@ -544,7 +540,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 					serviciosSalen.add((String) serviciosQueSalen.get(k));
 				}
 
-				graphString.addVertex(vertexId, aux);		
+				graph.addVertex(vertexId, aux);		
 
 			}
 		}
@@ -577,7 +573,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 					String destinoEdge = edgeObject.get("destino")!=null? (String) edgeObject.get("destino"): "No-Destino";
 
 					InfoServicios aux = new InfoServicios(Double.parseDouble(trip_total), Double.parseDouble(trip_miles), Double.parseDouble(trip_seconds));
-					graphString.addEdge(fuenteEdge, destinoEdge, aux);
+					graph.addEdge(fuenteEdge, destinoEdge, aux);
 
 				}
 			}
@@ -586,18 +582,32 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		{
 			e.printStackTrace();
 		} 
-		System.out.println("Número de arcos: " + graphString.test());
-		System.out.println("Número de keys (vértices): " + graphString.vertex().keys().size());
+		System.out.println("Número de arcos: " + graph.test());
+		System.out.println("Número de keys (vértices): " + graph.vertex().keys().size());
 	}
 
+	public int getCantidadServicios()
+	{
+		int cantidad = 0;
+		Lista<Keys<String>> llaves = graph.vertex().keys();
+		
+		for (int i = 0; i < llaves.size(); i++) 
+		{
+			VerticeConServicios auxVer = graph.findVertex(llaves.get(i).getKey()).info();
+			cantidad += auxVer.numeroServiciosQueSalen();
+		}
+		
+		return cantidad;
+	}
+	
 	public VerticeConServicios req1()
 	{
 		VerticeConServicios vertice = null;
 		int comparador = 0;
-		Lista<Keys<String>> llaves = graphString.vertex().keys();
+		Lista<Keys<String>> llaves = graph.vertex().keys();
 		for (int i = 0; i < llaves.size(); i++) 
 		{
-			Vertex auxVertex = graphString.findVertex(llaves.get(i).getKey());
+			Vertex auxVertex = graph.findVertex(llaves.get(i).getKey());
 			VerticeConServicios auxVer =  (VerticeConServicios) auxVertex.info();
 			comparador = auxVer.numeroServiciosTotal();
 			vertice = auxVer;
@@ -606,7 +616,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			{
 				if(j!=i)
 				{
-					Vertex auxVertex2 = graphString.findVertex(llaves.get(j).getKey());
+					Vertex auxVertex2 = graph.findVertex(llaves.get(j).getKey());
 					VerticeConServicios auxVer2 = (VerticeConServicios) auxVertex2.info();
 					int cantidadVertex2 = auxVer2.numeroServiciosTotal();
 					if(cantidadVertex2>comparador)
@@ -621,12 +631,12 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		return vertice;
 	}
 
-	public Lista componentesConexos()
+	public Lista req2()
 	{
 		Lista newLista = new Lista();
 
-		Graph grafoInvertido = graphString.reverse();
-		ArbolBinarioRN arbol = graphString.depthFirstSearch(grafoInvertido.darPostOrdenInvertido(grafoInvertido.depthFirstSearch()));
+		Graph grafoInvertido = graph.reverse();
+		ArbolBinarioRN arbol = graph.depthFirstSearch(grafoInvertido.darPostOrdenInvertido(grafoInvertido.depthFirstSearch()));
 
 		Lista llaves = arbol.getKeys();
 		for (int i = 0; i < llaves.size(); i++) {

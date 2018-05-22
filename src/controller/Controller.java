@@ -35,11 +35,16 @@ public class Controller
 	
 	public static Lista componentesConexos()
 	{
-		return manager.componentesConexos();
+		return manager.req2();
 	}
 	
 	public static VerticeConServicios verticeMasCongestionado()
 	{
 		return manager.req1();
+	}
+	
+	public static int getCantidadServicios()
+	{
+		return manager.getCantidadServicios();
 	}
 }

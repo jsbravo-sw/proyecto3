@@ -28,6 +28,8 @@ public interface ITaxiTripsManager
 	
 	public VerticeConServicios req1();
 	
-	public Lista componentesConexos();
+	public Lista req2();
+	
+	public int getCantidadServicios();
 
 }
