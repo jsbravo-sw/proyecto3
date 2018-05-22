@@ -249,8 +249,8 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			{
 				e.printStackTrace();
 			} 
-
-			persistirGrafo();
+			verReq4();
+			//	persistirGrafo();
 			System.out.println("Inside loadServices with " + direccionJson);
 			return true;
 		}
@@ -649,8 +649,26 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		return newLista;
 	}
 
-	public void verReq4(Lista<VerticeConServicios> lista)
+	public void verReq4()
 	{
+		Lista<String> caminoVertices = req4();
+		Lista <VerticeConServicios> lista = new Lista<VerticeConServicios>();
+		for (int i=0;i<caminoVertices.size();i++)
+		{
+			if (!caminoVertices.get(i).contains("No"))
+			{
+				double lat = Double.parseDouble(caminoVertices.get(i).split("/")[0]);
+				double lon = Double.parseDouble(caminoVertices.get(i).split("/")[1]);
+				VerticeConServicios aux = new VerticeConServicios(lat, lon);
+				lista.addAtEnd(aux);
+				System.out.println("agregue");
+			}
+		}
+		if (lista.size()==0)
+		{
+			verReq4();
+		}
+
 
 		if (lista.size()!=0)
 		{
@@ -674,7 +692,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		Lista<String> resp = new Lista<String>();
 		try 
 		{
-			FileReader fr = new FileReader(new File("data/Chicago Streets.csv"));
+			FileReader fr = new FileReader(new File("./data/Chicago Streets.csv"));
 			BufferedReader br = new BufferedReader(fr);
 			br.readLine();
 			String l = br.readLine();
@@ -698,6 +716,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 					latitude = Double.parseDouble(posicionesCalle[i-6].split(" ")[1]);
 					longitude = Double.parseDouble(posicionesCalle[i-6].split(" ")[0]);
 					resp.addAtEnd(latitude + ";" + longitude);
+
 				}
 
 				l = br.readLine();
@@ -714,6 +733,33 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	public Lista<String> req4()
+	{
+		Lista<String> dirAleatorias = cargarAleatorio();
+		String posicionInicial = dirAleatorias.get((int)(Math.random()*dirAleatorias.size()));
+		String posicionFinal = dirAleatorias.get((int)(Math.random()*dirAleatorias.size()));
+		String vertexInicial = "";
+		String vertexFinal = "";
+
+		double menorDistanciaInicial = Double.MAX_VALUE;
+		double menorDistanciaFinal = Double.MAX_VALUE;
+		for (int i=0; i<graph.vertex().keys().size();i++)
+		{
+			if (getDistance(Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[0]),Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[1]), Double.parseDouble(posicionInicial.split(";")[0]), Double.parseDouble(posicionInicial.split(";")[1]))<menorDistanciaInicial)
+			{
+				vertexInicial = graph.vertex().keys().get(i).getKey();
+				menorDistanciaInicial =getDistance(Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[0]),Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[1]), Double.parseDouble(posicionInicial.split(";")[0]), Double.parseDouble(posicionInicial.split(";")[1]));
+			}
+			if (getDistance(Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[0]),Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[1]), Double.parseDouble(posicionFinal.split(";")[0]), Double.parseDouble(posicionFinal.split(";")[1]))<menorDistanciaFinal)
+			{
+				vertexFinal = graph.vertex().keys().get(i).getKey();
+				menorDistanciaFinal =getDistance(Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[0]),Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[1]), Double.parseDouble(posicionFinal.split(";")[0]), Double.parseDouble(posicionFinal.split(";")[1]));
+			}
+		}
+		return graph.getPath(vertexInicial, vertexFinal, 0);
+	
+
 	}
 }
 

@@ -98,9 +98,9 @@ public class Maps {
 			String scriptTag = "var citymap = {";
 			for (int i = 0; i<lista.size()-1;i++)
 			{
-				scriptTag +=  lista.get(i).toString() + ": { center: { lat:" +  lista.get(i).getLatRef() + ", lng:" + lista.get(i).getLongRef() + "},";
+				scriptTag +=  "vertice"+(i) + ": {center: {lat:" +  lista.get(i).getLatRef() + ", lng:" + lista.get(i).getLongRef() + "}},";
 			}
-			scriptTag+= lista.get(lista.size()-1).toString() + ": { center: { lat:" +  lista.get(lista.size()-1).getLatRef() + ", lng:" + lista.get(lista.size()-1).getLongRef() + "}";
+			scriptTag+= "vertice"+(lista.size()-1) + ": {center: {lat:" +  lista.get(lista.size()-1).getLatRef() + ", lng:" + lista.get(lista.size()-1).getLongRef() + "}}";
 			
 			//Finalizo
 			
@@ -112,7 +112,7 @@ public class Maps {
 		scriptTag = "";
 		for (int i=0;i<lista.size()/2;i++)
 		{
-			scriptTag  += " var line = new google.maps.Polyline({ path: [{ + lat:" + lista.get(i).getLatRef() + ", lng:" + lista.get(i).getLongRef() + "}, {lat:" + lista.get(i+1).getLatRef() + ", lng:" +  lista.get(i+1).getLongRef()+ "}],icons: [{icon: lineSymbol,offset: '100%'}],map: map});";
+			scriptTag  += "var line" + (i) + " = new google.maps.Polyline({ path: [{lat:" + lista.get(i).getLatRef() + ", lng:" + lista.get(i).getLongRef() + "}, {lat:" + lista.get(i+1).getLatRef() + ", lng:" +  lista.get(i+1).getLongRef()+ "}],icons: [{icon: lineSymbol,offset: '100%'}],map: map});";
 		}
 		htmlString = htmlString.replace("//$defineArcos", scriptTag);
 		File newHtmlFile = new File(mapaReq4);

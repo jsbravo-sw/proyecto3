@@ -133,7 +133,6 @@ public class Graph <K extends Comparable<K>, V, A>{
 			incoming = new Lista<Vertex>();
 			outcoming = new Lista<Vertex>();
 			arcos = new Lista<Edge>();
-			setMinimoCosto(Integer.MAX_VALUE);
 			anterior = null;
 		}
 
@@ -703,7 +702,10 @@ public class Graph <K extends Comparable<K>, V, A>{
 				}
 			}
 		}
+
 		return true;
+		
+		
 	}
 
 	/**
@@ -719,20 +721,20 @@ public class Graph <K extends Comparable<K>, V, A>{
 		// check for no path found
 		if (target.minimoCosto==Integer.MAX_VALUE)
 		{
-			path.add("No path found");
+			path.add("No existe un camino entre los vértices ");
 			return path;
 		}
 
 		// loop through the vertices from end target 
 		for (Vertex v = target; v !=null; v = v.anterior)
 		{
-			path.add(v.informacion + " : cost : " + v.minimoCosto);
+			path.add(v.idVertex + "/peso/" + v.minimoCosto);
 		}
 
 		// flip the list
 		//Lo inverto
 		Lista <String> reverse = new Lista<String>();
-		for (int i=path.size();i>0;i--)
+		for (int i=path.size()-1;i>=0;i--)
 		{
 			reverse.addAtEnd(path.get(i));
 		}
