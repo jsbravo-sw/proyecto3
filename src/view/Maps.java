@@ -96,12 +96,12 @@ public class Maps {
 			htmlString = FileUtils.readFileToString(htmlTemplateFile);
 			//https://developers.google.com/maps/documentation/javascript/examples/circle-simple?hl=es-419
 			String scriptTag = "var citymap = {";
-			scriptTag +=  "vertice"+(lista.size()-1) + ": {center: {lat:" +  lista.get(lista.size()-1).getLatRef() + ", lng:" + lista.get(lista.size()-1).getLongRef() + "}, color: {fillColor:'#FF0000', strokeColor: '#FF0000'} },";
+			scriptTag +=  "vertice"+(lista.size()-1) + ": {center: {lat:" +  lista.get(lista.size()-1).getLatRef() + ", lng:" + lista.get(lista.size()-1).getLongRef() + "}, color: {fillColor: '#008000', strokeColor: '#008000'} },";
 			for (int i = lista.size()-2; i>0;i--)
 			{
 				scriptTag +=  "vertice"+(i) + ": {center: {lat:" +  lista.get(i).getLatRef() + ", lng:" + lista.get(i).getLongRef() + "}, color: {fillColor:'#696969', strokeColor: '#696969'}},";
 			}
-			scriptTag+= "vertice"+(0) + ": {center: {lat:" +  lista.get(0).getLatRef() + ", lng:" + lista.get(0).getLongRef() + "}, color: {fillColor:'#008000', strokeColor: '#008000'}}";
+			scriptTag+= "vertice"+(0) + ": {center: {lat:" +  lista.get(0).getLatRef() + ", lng:" + lista.get(0).getLongRef() + "}, color: {fillColor:'#FF0000', strokeColor: '#FF0000'}}";
 			
 			//Finalizo
 			
