@@ -20,7 +20,7 @@ public class Maps {
 
 	public final static String direccionReq4 = "./data/templates/templateReq4.html";
 	
-	public final static String mapaReq4 = "./data/templates/mapaReq4.html";
+	public final static String mapaReq4 = "data/templates/mapaReq4.html";
 
 	public final static String direccionReq5 = "./data/templates/templateReq5.html";
 
@@ -96,11 +96,12 @@ public class Maps {
 			htmlString = FileUtils.readFileToString(htmlTemplateFile);
 			//https://developers.google.com/maps/documentation/javascript/examples/circle-simple?hl=es-419
 			String scriptTag = "var citymap = {";
-			for (int i = 0; i<lista.size()-1;i++)
+			scriptTag +=  "vertice"+(lista.size()-1) + ": {center: {lat:" +  lista.get(lista.size()-1).getLatRef() + ", lng:" + lista.get(lista.size()-1).getLongRef() + "}, color: {fillColor:'#FF0000', strokeColor: '#FF0000'} },";
+			for (int i = lista.size()-2; i>0;i--)
 			{
-				scriptTag +=  "vertice"+(i) + ": {center: {lat:" +  lista.get(i).getLatRef() + ", lng:" + lista.get(i).getLongRef() + "}},";
+				scriptTag +=  "vertice"+(i) + ": {center: {lat:" +  lista.get(i).getLatRef() + ", lng:" + lista.get(i).getLongRef() + "}, color: {fillColor:'#696969', strokeColor: '#696969'}},";
 			}
-			scriptTag+= "vertice"+(lista.size()-1) + ": {center: {lat:" +  lista.get(lista.size()-1).getLatRef() + ", lng:" + lista.get(lista.size()-1).getLongRef() + "}}";
+			scriptTag+= "vertice"+(0) + ": {center: {lat:" +  lista.get(0).getLatRef() + ", lng:" + lista.get(0).getLongRef() + "}, color: {fillColor:'#008000', strokeColor: '#008000'}}";
 			
 			//Finalizo
 			
@@ -110,7 +111,7 @@ public class Maps {
 			//TODO: Definir arcos
 			
 		scriptTag = "";
-		for (int i=0;i<(lista.size()/2)+1;i++)
+		for (int i=(lista.size()/2);i>=0;i--)
 		{
 			scriptTag  += "var line" + (i) + " = new google.maps.Polyline({ path: [{lat:" + lista.get(i).getLatRef() + ", lng:" + lista.get(i).getLongRef() + "}, {lat:" + lista.get(i+1).getLatRef() + ", lng:" +  lista.get(i+1).getLongRef()+ "}],icons: [{icon: lineSymbol,offset: '100%'}],map: map});";
 		}
