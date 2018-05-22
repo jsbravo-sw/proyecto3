@@ -689,6 +689,10 @@ public class Graph <K extends Comparable<K>, V, A>{
 				{
 					elMachete = ((InfoServicios) e.infoArco).getTrip_seconds();
 				}
+				else if (pParam == 3)
+				{
+					elMachete = ((InfoServicios) e.infoArco).hayPeaje();
+				}
 
 				double totalDistance = u.minimoCosto + elMachete ;
 				if (totalDistance < v.minimoCosto)

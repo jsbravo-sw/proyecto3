@@ -111,10 +111,11 @@ public class Maps {
 			//TODO: Definir arcos
 			
 		scriptTag = "";
-		for (int i=(lista.size()/2);i>=0;i--)
+		for (int i=(lista.size()-2);i>=0;i--)
 		{
 			scriptTag  += "var line" + (i) + " = new google.maps.Polyline({ path: [{lat:" + lista.get(i).getLatRef() + ", lng:" + lista.get(i).getLongRef() + "}, {lat:" + lista.get(i+1).getLatRef() + ", lng:" +  lista.get(i+1).getLongRef()+ "}],icons: [{icon: lineSymbol,offset: '100%'}],map: map});";
 		}
+		//scriptTag += "var line" + (lista.size()) + " = new google.maps.Polyline({ path: [{lat:" + lista.get(lista.size()-2).getLatRef() + ", lng:" + lista.get(lista.size()-2).getLongRef() + "}, {lat:" + lista.get(lista.size()-1).getLatRef() + ", lng:" +  lista.get(lista.size()-1).getLongRef()+ "}],icons: [{icon: lineSymbol,offset: '100%'}],map: map});";
 		htmlString = htmlString.replace("//$defineArcos", scriptTag);
 		File newHtmlFile = new File(mapaReq4);
 		FileUtils.writeStringToFile(newHtmlFile, htmlString);

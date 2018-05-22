@@ -249,7 +249,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			{
 				e.printStackTrace();
 			} 
-			
+
 			persistirGrafo();
 			System.out.println("Inside loadServices with " + direccionJson);
 			return true;
@@ -655,23 +655,26 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		{
 			System.out.println("El camino a seguir entre los dos puntos es: ");
 		}
+		double distancia = Double.MIN_VALUE;
 		Lista<String> caminoVertices = req4();
 		Lista <VerticeConServicios> lista = new Lista<VerticeConServicios>();
 		for (int i=0;i<caminoVertices.size();i++)
 		{
-			
+
 			if (!caminoVertices.get(i).contains("No"))
 			{
-				
 				double lat = Double.parseDouble(caminoVertices.get(i).split("/")[0]);
 				double lon = Double.parseDouble(caminoVertices.get(i).split("/")[1]);
-				double distancia = Double.parseDouble(caminoVertices.get(i).split("/")[3]);
+
+				distancia+= Double.parseDouble(caminoVertices.get(i).split("/")[3]);
+
 				VerticeConServicios aux = new VerticeConServicios(lat, lon);
-				System.out.println("Vértice:" + lat +"/" + lon + " con distancia de: " + distancia);
-				System.out.println();
+				System.out.println("Vértice:" + lat +"/" + lon);
 				lista.addAtEnd(aux);
 			}
 		}
+
+
 		if (lista.size()==0)
 		{
 			verReq4(true);
@@ -680,6 +683,10 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 
 		if (lista.size()!=0)
 		{
+
+			System.out.println("Con una distancia total de: " + distancia + " millas");
+
+
 			Maps.mapaReq4(lista);
 
 			//Abrir el mapa en el explorador
@@ -766,7 +773,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			}
 		}
 		return graph.getPath(vertexInicial, vertexFinal, 0);
-	
+
 
 	}
 }

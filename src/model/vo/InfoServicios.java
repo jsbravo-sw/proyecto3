@@ -8,23 +8,23 @@ public class InfoServicios implements Comparable<InfoServicios>
 	private double trip_total, trip_miles;
 	private double  trip_seconds;
 	private int cantidadServicios;
-	private boolean peaje=false;
+	private boolean peaje;
 	
 	public InfoServicios(double pTripTotal, double pTripMiles, double pTripSeconds)
 	{
-		trip_miles = pTripMiles;
-		trip_total = pTripTotal;
-		trip_seconds = pTripSeconds;
+		trip_miles += pTripMiles;
+		trip_total += pTripTotal;
+		trip_seconds += pTripSeconds;
 		cantidadServicios++;
 	}
 	public InfoServicios(Servicio pServicio, String pInicial, String pFinal)
 	{
-		trip_miles = pServicio.getTripMiles();
-		trip_total = pServicio.getTripTotal();
-		trip_seconds = pServicio.getTripSeconds();
+		trip_miles += pServicio.getTripMiles();
+		trip_total += pServicio.getTripTotal();
+		trip_seconds += pServicio.getTripSeconds();
 		vertexInicialId = pInicial;
 		vertexFinalId = pFinal;
-		peaje = pServicio.isPeaje(); 
+		peaje = pServicio.hayPeaje(); 
 		cantidadServicios++;
 	}
 	public double getTrip_total() {
@@ -64,7 +64,7 @@ public class InfoServicios implements Comparable<InfoServicios>
 		trip_miles+= pServicio.getTripMiles();
 		trip_total+=pServicio.getTripTotal();
 		trip_seconds+=pServicio.getTripSeconds();
-		peaje = peaje != true ? pServicio.isPeaje() : true; 
+		peaje = peaje != true ? pServicio.hayPeaje() : true; 
 		
 	}
 
@@ -91,5 +91,11 @@ public class InfoServicios implements Comparable<InfoServicios>
 			return (int) (iS1.getTrip_miles() - iS2.getTrip_miles());
 		}
 	};
+
+	public double hayPeaje() 
+	{
+		//Si hay peaje, retorna el peso máximo para que no lo tenga en cuenta
+		return  peaje? Double.MAX_VALUE : 0;
+	}
 
 }

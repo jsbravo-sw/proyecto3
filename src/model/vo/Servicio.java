@@ -142,7 +142,7 @@ public class Servicio implements Comparable<Servicio>
 	public void setVertexFinalId(String vertexFinalId) {
 		this.vertexFinalId = vertexFinalId;
 	}
-	public boolean isPeaje() {
+	public boolean hayPeaje() {
 		return peaje;
 	}
 	public void setPeaje(boolean peaje) {
