@@ -638,7 +638,8 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		Lista newLista = new Lista();
 
 		Graph grafoInvertido = graph.reverse();
-		ArbolBinarioRN arbol = graph.depthFirstSearch(grafoInvertido.darPostOrdenInvertido(grafoInvertido.depthFirstSearch()));
+		Lista postOrdenInvertido = grafoInvertido.darPostOrdenInvertido(grafoInvertido.depthFirstSearch());
+		ArbolBinarioRN arbol = graph.depthFirstSearch(postOrdenInvertido);
 
 		Lista llaves = arbol.getKeys();
 		for (int i = 0; i < llaves.size(); i++) {
