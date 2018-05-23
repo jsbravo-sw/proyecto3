@@ -124,6 +124,10 @@ public class TaxiTripsManagerView
 			case 5:
 				Controller.verReq4();
 				break;
+				
+			case 6:
+				Controller.verReq5();
+				break;
 			case 8: 
 				fin=true;
 				sc.close();

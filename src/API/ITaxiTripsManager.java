@@ -34,4 +34,6 @@ public interface ITaxiTripsManager
 
 	public void verReq4(boolean pRun);
 
+	public void verReq5();
+
 }

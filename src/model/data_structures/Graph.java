@@ -3,6 +3,7 @@ package model.data_structures;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -117,7 +118,7 @@ public class Graph <K extends Comparable<K>, V, A>{
 		@JsonProperty
 		private Lista<Vertex> outcoming;
 
-		private double minimoCosto;
+		private double minimoCosto, maximoCosto;
 
 		@JsonProperty
 		private boolean marcado;
@@ -712,6 +713,75 @@ public class Graph <K extends Comparable<K>, V, A>{
 		
 	}
 
+	private boolean DijkstraLongest(K v1, int pParam)
+	{
+		double elMachete = 0;
+
+		if (vertices().isEmpty()) return false;
+
+		// reset all vertices minDistance and previous
+		resetDistancesMax();
+
+		// make sure it is valid
+		Vertex source = findVertex(v1);
+		if (source==null) return false;
+
+		// set to 0 and add to heap
+		source.maximoCosto = 0;
+		PriorityQueue<Vertex> pq = new PriorityQueue<>(Collections.reverseOrder());
+		pq.add(source);
+
+		while (!pq.isEmpty())
+		{
+			//pull off top of queue
+			Vertex u = pq.poll();
+
+			// loop through adjacent vertices
+			for (int i=0; i<u.outcoming.size();i++)
+			{
+				Vertex v = u.outcoming.get(i);
+				K vInicial = v.idVertex;
+				K uFinal = u.idVertex;
+				// get edge
+				Edge e = findEdge(uFinal, vInicial);
+				if (e==null) return false;
+				// add cost to current
+
+				if (pParam == 0)
+				{
+					elMachete = ((InfoServicios) e.infoArco).getTrip_miles();
+				}
+				else if (pParam == 1)
+				{
+					elMachete = ((InfoServicios) e.infoArco).getTrip_total();
+				}
+				else if (pParam == 2)
+				{
+					elMachete = ((InfoServicios) e.infoArco).getTrip_seconds();
+				}
+				else if (pParam == 3)
+				{
+					elMachete = ((InfoServicios) e.infoArco).hayPeaje();
+				}
+
+				double totalDistance = u.maximoCosto + elMachete ;
+				if (totalDistance > v.maximoCosto)
+				{
+					// new cost is smaller, set it and add to queue
+					pq.remove(v);
+					v.maximoCosto = totalDistance;
+					// link vertex
+					v.anterior = u;
+					pq.add(v);
+				}
+			}
+		}
+
+		return true;
+		
+		
+	}
+
 	/**
 	 * Goes through the result tree created by the Dijkstra method
 	 * and steps backward
@@ -745,6 +815,33 @@ public class Graph <K extends Comparable<K>, V, A>{
 		return reverse;
 	}
 
+	private Lista<String> getLongestPath(Vertex target)
+	{
+		Lista<String> path = new Lista<String>();
+
+		// check for no path found
+		if (target.maximoCosto==Double.MIN_VALUE)
+		{
+			path.add("No existe un camino entre los vértices ");
+			return path;
+		}
+
+		// loop through the vertices from end target 
+		for (Vertex v = target; v !=null; v = v.anterior)
+		{
+			path.add(v.idVertex + "/peso/" + v.maximoCosto);
+		}
+
+		// flip the list
+		//Lo inverto
+		Lista <String> reverse = new Lista<String>();
+		for (int i=path.size()-1;i>=0;i--)
+		{
+			reverse.addAtEnd(path.get(i));
+		}
+		return reverse;
+	}
+
 	/**
 	 * for Dijkstra, resets all the path tree fields
 	 */
@@ -758,6 +855,19 @@ public class Graph <K extends Comparable<K>, V, A>{
 
 	}
 
+	/**
+	 * for Dijkstra, resets all the path tree fields
+	 */
+	private void resetDistancesMax()
+	{
+		for (int i=0;i<vertices().size();i++)
+		{
+			vertices().get(i).maximoCosto = Double.MIN_VALUE;
+			vertices().get(i).anterior = null;
+		}
+
+	}
+	
 	/**
 	 * PUBLIC WRAPPER FOR PRIVATE FUNCTIONS
 	 * Calls the Dijkstra method to build the path tree for the given
@@ -773,6 +883,14 @@ public class Graph <K extends Comparable<K>, V, A>{
 		boolean test = Dijkstra(from, pParam);
 		if (test==false) return null;
 		Lista<String> path = getShortestPath(findVertex(to));
+		return path;
+	}
+	
+	public Lista<String> getMaxPath(K from, K to, int pParam)
+	{
+		boolean test = DijkstraLongest(from, pParam);
+		if (test==false) return null;
+		Lista<String> path = getLongestPath(findVertex(to));
 		return path;
 	}
 

@@ -52,4 +52,9 @@ public class Controller
 		manager.verReq4(false);
 		
 	}
+
+	public static void verReq5() {
+		manager.verReq5();
+		
+	}
 }
