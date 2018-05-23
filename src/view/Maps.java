@@ -250,7 +250,7 @@ public class Maps {
 	{
 		System.out.println("Se ha impreso el mapa");
 		try {
-			File htmlTemplateFile = new File(direccionReq4);
+			File htmlTemplateFile = new File(direccionReq5);
 			String htmlString;
 			htmlString = FileUtils.readFileToString(htmlTemplateFile);
 			//https://developers.google.com/maps/documentation/javascript/examples/circle-simple?hl=es-419
@@ -290,7 +290,7 @@ public class Maps {
 	
 		System.out.println("Se ha impreso el mapa");
 		try {
-			File htmlTemplateFile = new File(direccionReq4);
+			File htmlTemplateFile = new File(direccionReq6);
 			String htmlString;
 			htmlString = FileUtils.readFileToString(htmlTemplateFile);
 			//https://developers.google.com/maps/documentation/javascript/examples/circle-simple?hl=es-419

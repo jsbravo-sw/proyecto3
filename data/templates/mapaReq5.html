@@ -3,7 +3,7 @@
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>Camino de menor distancia</title>
+    <title>Caminos de mayor y menor duracion entre dos puntos aleatorios</title>
     <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -25,7 +25,7 @@
       // America.
 
       // First, create an object containing LatLng and population for each city.
-    var citymap = {vertice2: {center: {lat:41.92276062, lng:-87.699155343}, color: {fillColor: '#008000', strokeColor: '#008000'} },vertice1: {center: {lat:41.922686284, lng:-87.649488729}, color: {fillColor:'#696969', strokeColor: '#696969'}},vertice0: {center: {lat:42.001571027, lng:-87.695012589}, color: {fillColor:'#FF0000', strokeColor: '#FF0000'}}};
+    var citymap = {vertice3: {center: {lat:41.938666196, lng:-87.711210593}, color: {fillColor: '#008000', strokeColor: '#008000'} },vertice2: {center: {lat:41.944226601, lng:-87.655998182}, color: {fillColor:'#696969', strokeColor: '#696969'}},vertice1: {center: {lat:41.878865584, lng:-87.625192142}, color: {fillColor:'#696969', strokeColor: '#696969'}},vertice0: {center: {lat:41.94651142, lng:-87.806020002}, color: {fillColor:'#FF0000', strokeColor: '#FF0000'}}};
 
       function initMap() {
         // Create the map.
@@ -47,7 +47,7 @@
             fillOpacity: 0.35,
             map: map,
             center: citymap[city].center,
-            radius: 100
+            radius: 150
           });
         }
 
@@ -58,7 +58,7 @@
         };
 
         // Create the polyline and add the symbol via the 'icons' property.
-        var line1 = new google.maps.Polyline({ path: [{lat:41.922686284, lng:-87.649488729}, {lat:41.92276062, lng:-87.699155343}],icons: [{icon: lineSymbol,offset: '100%'}],map: map});var line0 = new google.maps.Polyline({ path: [{lat:42.001571027, lng:-87.695012589}, {lat:41.922686284, lng:-87.649488729}],icons: [{icon: lineSymbol,offset: '100%'}],map: map});
+        var line2 = new google.maps.Polyline({ path: [{lat:41.944226601, lng:-87.655998182}, {lat:41.938666196, lng:-87.711210593}],icons: [{icon: lineSymbol,offset: '100%'}],map: map});var line1 = new google.maps.Polyline({ path: [{lat:41.878865584, lng:-87.625192142}, {lat:41.944226601, lng:-87.655998182}],icons: [{icon: lineSymbol,offset: '100%'}],map: map});var line0 = new google.maps.Polyline({ path: [{lat:41.94651142, lng:-87.806020002}, {lat:41.878865584, lng:-87.625192142}],icons: [{icon: lineSymbol,offset: '100%'}],map: map});
       }
     </script>
     <script async defer

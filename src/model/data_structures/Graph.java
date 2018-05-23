@@ -813,53 +813,75 @@ public class Graph <K extends Comparable<K>, V, A>{
 
 	public Lista<Camino> getAllPathsWrap(K from, K to)
 	{
-		
+
 	}
 
-	public Vertex getAllPaths(K from, K to)
+	public Vertex getAllPaths(K from, K to, Lista<Vertex> recorridos)
 	{
 		Vertex elInicial = findVertex(from);
 		Vertex elFinal = findVertex(to);
 
-		for (int i=0; i<elInicial.outcoming.size();i++)
+		if (recorridos ==null)
 		{
-			if (elInicial.outcoming.get(i).equals(elFinal))
+			Lista<Vertex> aux = new Lista <Vertex>();
+			aux.add(elInicial);
+			for (int i=0; i<elInicial.outcoming.size();i++)
 			{
-				return elInicial;
+				if (elInicial.outcoming.get(i).equals(elFinal))
+				{
+					return elInicial;
+				}
+				else 
+				{
+					getAllPaths (elInicial.outcoming.get(i).idVertex, to, aux);
+				}
 			}
-			else 
-			{
-				getAllPaths (elInicial.outcoming.get(i).idVertex, to);
-			}
+			return null;
 		}
-		return null;
+		else
+		{
+			recorridos.add(elInicial);
+			for (int i=0; i<elInicial.outcoming.size();i++)
+			{
+				if (elInicial.outcoming.get(i).equals(elFinal))
+				{
+					return elInicial;
+				}
+				else 
+				{
+					getAllPaths (elInicial.outcoming.get(i).idVertex, to, recorridos);
+				}
+			}
+			return null;
+		}
 	}
 
-	public class Camino implements Comparable<Camino>
+
+public class Camino implements Comparable<Camino>
+{
+	private Lista <Vertex> camino;
+
+	private Lista<Edge> arcos;
+	private double id;
+
+	public Camino()
 	{
-		private Lista <Vertex> camino;
-
-		private Lista<Edge> arcos;
-		private double id;
-
-		public Camino()
-		{
-			camino = new Lista<Vertex>();
-			arcos = new Lista<Edge>();
-			id = (Math.random() * 10000);
-		}
-
-		public int compareTo(Camino arg0)
-		{
-			if (id == arg0.id)
-			{
-				return 0;
-			}
-			return id>arg0.id ? 1 : -1;
-		}
-
-
+		camino = new Lista<Vertex>();
+		arcos = new Lista<Edge>();
+		id = (Math.random() * 10000);
 	}
+
+	public int compareTo(Camino arg0)
+	{
+		if (id == arg0.id)
+		{
+			return 0;
+		}
+		return id>arg0.id ? 1 : -1;
+	}
+
+
+}
 
 
 
