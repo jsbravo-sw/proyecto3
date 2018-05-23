@@ -9,6 +9,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import controller.Controller;
+import model.data_structures.Graph.Edge;
 import model.data_structures.Graph.Vertex;
 import model.data_structures.Lista;
 import model.logic.TaxiTripsManager;
@@ -21,6 +22,7 @@ import model.vo.VerticeConServicios;
  */
 public class TaxiTripsManagerView 
 {
+	private static int id = 0;
 
 	public static void main(String[] args) 
 	{
@@ -98,37 +100,70 @@ public class TaxiTripsManagerView
 				System.out.println("latitud: " + aux2.getLatRef() + " longitud: " + aux2.getLongRef() + "\ntotal servicios que salieron: " + aux2.numeroServiciosQueSalen() + "\ntotal servicios que llegaron: " + aux2.numeroServiciosQueLlegan());
 				break;
 			case 4: 
-					Lista aux = Controller.req2();
-					System.out.println("Total de componenetes fuertemente conexas: " + aux.size());
-					CompFuertementeConexa verticesComp = null;
-					int comparador = 0;
-					for (int i = 0; i < aux.size(); i++) 
+				Lista aux = Controller.req2();
+				System.out.println("Total de componenetes fuertemente conexas: " + aux.size());
+				CompFuertementeConexa verticesComp = null;
+				int comparador = 0;
+				for (int i = 0; i < aux.size(); i++) 
+				{
+					if(((CompFuertementeConexa)aux.get(i)).getTamañoComp()>comparador)
 					{
-						if(((CompFuertementeConexa)aux.get(i)).getTamañoComp()>comparador)
-						{
-							comparador = ((CompFuertementeConexa)aux.get(i)).getTamañoComp();
-							verticesComp = (CompFuertementeConexa)aux.get(i);
-						}
-						String color = ((CompFuertementeConexa)aux.get(i)).getColorComponente();
-						System.out.println("Componente conexa " + (1+i) + ": " + "\n" + "Color de la componente: " + color + "  Cantidad de vertices en la componente: " + ((CompFuertementeConexa)aux.get(i)).getTamañoComp());
+						comparador = ((CompFuertementeConexa)aux.get(i)).getTamañoComp();
+						verticesComp = (CompFuertementeConexa)aux.get(i);
 					}
-					
-					Lista aux3 = verticesComp.getListaVertices();
-					for (int i = 0; i < aux3.size(); i++) 
-					{
-						Vertex ver = (Vertex) aux3.get(i);
-						VerticeConServicios verticesServicios = (VerticeConServicios) ver.info();
-						Maps.mapaReq2(verticesServicios.getLatRef(), verticesServicios.getLongRef(), verticesServicios.numeroServiciosTotal(), Controller.getCantidadServicios(), i, verticesComp.getColorComponente() );
+					String color = ((CompFuertementeConexa)aux.get(i)).getColorComponente();
+					System.out.println("Componente conexa " + (1+i) + ": " + "\n" + "Color de la componente: " + color + "  Cantidad de vertices en la componente: " + ((CompFuertementeConexa)aux.get(i)).getTamañoComp());
+				}
+
+				Lista aux3 = verticesComp.getListaVertices();
+				for (int i = 0; i < aux3.size(); i++) 
+				{
+					Vertex ver = (Vertex) aux3.get(i);
+					Lista arcos = ver.arcos();
+					for (int j = 0; j < arcos.size(); j++) {
+						Vertex fuente = ((Edge)arcos.get(j)).getFuente();
+						String[] fuenteId = ((String)fuente.id()).split("/");
+						Vertex destino = ((Edge)arcos.get(j)).getDestino();
+						String[] destinoId = ((String)destino.id()).split("/");
+						Maps.mapaReq2Lineas(fuenteId[0], fuenteId[1], destinoId[0], destinoId[1],verticesComp.getColorComponente());
 					}
+					VerticeConServicios verticesServicios = (VerticeConServicios) ver.info();
+					Maps.mapaReq2(verticesServicios.getLatRef(), verticesServicios.getLongRef(), verticesServicios.numeroServiciosTotal(), Controller.getCantidadServicios(), i, verticesComp.getColorComponente() );
+				}
 				break;
 			case 5:
+				Lista aux4 = Controller.req2();
+				System.out.println("Total de componenetes fuertemente conexas2: " + aux4.size());
+				for (int i = 0; i < aux4.size(); i++) 
+				{
+					String color = ((CompFuertementeConexa)aux4.get(i)).getColorComponente();
+					CompFuertementeConexa aux5 = (CompFuertementeConexa)aux4.get(i);
+					for (int j = 0; j < aux5.getListaVertices().size(); j++) 
+					{
+						Vertex vertice = (Vertex) aux5.getListaVertices().get(j);
+						VerticeConServicios verticesServicios = (VerticeConServicios) vertice.info();
+						Maps.mapaReq3(verticesServicios.getLatRef(), verticesServicios.getLongRef(), verticesServicios.numeroServiciosTotal(), Controller.getCantidadServicios(), darIdentificador(), aux5.getColorComponente());
+
+						Lista arcos = vertice.arcos();
+						for (int k = 0; k < arcos.size(); k++) 
+						{
+							Vertex fuente = ((Edge)arcos.get(k)).getFuente();
+							String[] fuenteId = ((String)fuente.id()).split("/");
+							Vertex destino = ((Edge)arcos.get(k)).getDestino();
+							String[] destinoId = ((String)destino.id()).split("/");
+							Maps.mapaReq3Lineas(fuenteId[0], fuenteId[1], destinoId[0], destinoId[1],aux5.getColorComponente());
+						}
+					}
+
+				}
+			case 6:
 				Controller.verReq4();
 				break;
 				
-			case 6:
+			case 7:
 				Controller.verReq5();
 				break;
-			case 8: 
+			case 9: 
 				fin=true;
 				sc.close();
 				break;
@@ -136,6 +171,7 @@ public class TaxiTripsManagerView
 			}
 		}
 	}
+
 	/**
 	 * Menu 
 	 */
@@ -148,11 +184,12 @@ public class TaxiTripsManagerView
 		System.out.println("1. Cargar toda la informacion del sistema de una fuente de datos (small, medium o large).");
 		System.out.println("2. Cargar un grafo a partir de una fuente de datos.");
 		System.out.println("3. Mostrar la informacion del vertice mas congestionado");
-		System.out.println("4. Mostrar la informacion de las componentes fuertemente conexas.");
-		System.out.println("5. Encontrar camino de menor distancia para dos puntos aleatorios.");
-		System.out.println("6. Hallar caminos de mayor y menor duracion entre dos puntos aleatorios.");
-		System.out.println("7. Encontrar caminos sin peaje entre dos puntos aleatorios.");
-		System.out.println("8. Salir");
+		System.out.println("4. Mostrar la informacion del componente fuertemente conexos mas grande.");
+		System.out.println("5. Mostrar la informacion del componente fuertemente conexos.");
+		System.out.println("6. Encontrar camino de menor distancia para dos puntos aleatorios.");
+		System.out.println("7. Hallar caminos de mayor y menor duracion entre dos puntos aleatorios.");
+		System.out.println("8. Encontrar caminos sin peaje entre dos puntos aleatorios.");
+		System.out.println("9. Salir");
 		System.out.println("Ingrese el numero de la opcion seleccionada y presione <Enter> para confirmar: (e.g., 1):");
 
 	}
@@ -164,6 +201,14 @@ public class TaxiTripsManagerView
 		System.out.println("-- 2. Medium");
 		System.out.println("-- 3. Large");
 		System.out.println("-- Ingrese el numero de la fuente a cargar y presione <Enter> para confirmar: (e.g., 1)");
+	}
+	
+	private static int darIdentificador()
+	{
+		int identificador = id;
+		id++;
+		return identificador;
+
 	}
 
 

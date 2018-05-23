@@ -10,12 +10,21 @@ import model.vo.VerticeConServicios;
 
 public class Maps {
 
+	private static boolean escribio = false;
+	private static boolean escribio2 = false;
+	private static boolean escribio3 = false;
+	private static boolean escribio4 = false;
+	
 	public final static String direccionReq1 = "./data/templates/templateReq1.html";
 
 	public final static String mapaReq1 = "./data/templates/mapaReq1.html";
 
 	public final static String mapaReq2 = "./data/templates/mapaReq2.html";
 
+	public final static String direccionReq2 = "./data/templates/templateReq2.html";
+
+	public final static String mapaReq3 = "./data/templates/mapaReq3.html";
+	
 	public final static String direccionReq3 = "./data/templates/templateReq3.html";
 
 	public final static String direccionReq4 = "./data/templates/templateReq4.html";
@@ -31,6 +40,7 @@ public class Maps {
 	public static void mapaReq1(double lat, double lon, int pPopulation, int pTotalPopulation){
 		System.out.println("Se ha impreso el mapa");
 		try {
+			double densidad = (((double)pPopulation/pTotalPopulation)*100);
 			File htmlTemplateFile = new File(direccionReq1);
 			String htmlString;
 			htmlString = FileUtils.readFileToString(htmlTemplateFile);
@@ -41,11 +51,11 @@ public class Maps {
 					"    title: 'Vertice mas congestionado'" + 
 					"  });"+
 					"      var citymap = {"
-        + "chicago: {"
-          +"center: {lat: 41.880994471, lng: -87.632746489},"
-          +"population: " + (((double)pPopulation/pTotalPopulation)*100)
-        +"}};";
-			
+					+ "chicago: {"
+					+"center: {lat: 41.880994471, lng: -87.632746489},"
+					+"population: " + densidad
+					+"}};";
+
 			htmlString = htmlString.replace("//$script", scriptTag);
 			File newHtmlFile = new File(mapaReq1);
 			FileUtils.writeStringToFile(newHtmlFile, htmlString);	
@@ -54,11 +64,19 @@ public class Maps {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void mapaReq2(double lat, double lon, int pPopulation, int pTotalPopulation, int pIdentificador, String pColor){
 		//System.out.println("Se ha impreso el mapa");
+		double densidad = (((double)pPopulation/pTotalPopulation)*100);
 		try {
-			File htmlTemplateFile = new File(mapaReq2);
+			File htmlTemplateFile;
+			if(!escribio)
+			{
+				htmlTemplateFile = new File(direccionReq2);
+				escribio = true;
+			}
+			else
+				htmlTemplateFile = new File(mapaReq2);		
 			String htmlString;
 			htmlString = FileUtils.readFileToString(htmlTemplateFile);
 			//System.out.println(htmlString);
@@ -72,21 +90,120 @@ public class Maps {
 
 			String scriptTag2 ="chicago"+pIdentificador+" : {"+
 					"center: myLatLng"+pIdentificador+","+
-					"population: " + (((double)pPopulation/pTotalPopulation)*100)+
-					"}, /*$scriptCirculos*/";
+					"population: " + densidad
+					+"}, /*$scriptCirculos*/";
 			String scriptTag3 = "'"+pColor+"'";
-			
+
 			htmlString = htmlString.replace("//$scriptVertices", scriptTag);
 			htmlString = htmlString.replace("/*$scriptCirculos*/", scriptTag2);
 			htmlString = htmlString.replace("/*color*/", scriptTag3);
 			htmlString = htmlString.replace("/*color2*/", scriptTag3);
-			htmlString = htmlString.replace("//$scriptLineas", scriptTag3);
 			File newHtmlFile = new File(mapaReq2);
 			FileUtils.writeStringToFile(newHtmlFile, htmlString);	
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public static void mapaReq2Lineas(String pFuenteLat, String pFuenteLong, String pDestinoLat, String pDestinoLong, String pColor)
+	{
+		File htmlTemplateFile;
+		if(!escribio2)
+		{
+			htmlTemplateFile = new File(direccionReq2);
+			escribio2 = true;
+		}
+		else
+			htmlTemplateFile = new File(mapaReq2);		
+		String htmlString;
+		try {
+			htmlString = FileUtils.readFileToString(htmlTemplateFile);
+			String scriptTag4 = "var line = new google.maps.Polyline("
+					+ "{path: [{lat: "+pFuenteLat+", lng: "+pFuenteLong+"},{lat: "+pDestinoLat+", lng: "+pDestinoLong+"}],"
+					+ "strokeColor: '"+pColor+"',"
+					+ "strokeWeight: 1.5,"
+					+"icons: [{"
+					+"offset: '200%'"
+					+"}],"
+					+"map: map"
+					+"});"
+					+ "\n//$scriptLineas";
+			htmlString = htmlString.replace("//$scriptLineas", scriptTag4);
+			File newHtmlFile = new File(mapaReq2);
+			FileUtils.writeStringToFile(newHtmlFile, htmlString);	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void mapaReq3(double lat, double lon, int pPopulation, int pTotalPopulation, int pIdentificador, String pColor){
+		//System.out.println("Se ha impreso el mapa");
+		double densidad = (((double)pPopulation/pTotalPopulation)*100);
+		try {
+			File htmlTemplateFile;
+			if(!escribio3)
+			{
+				htmlTemplateFile = new File(direccionReq3);
+				escribio3 = true;
+			}
+			else
+				htmlTemplateFile = new File(mapaReq3);		
+			String htmlString;
+			htmlString = FileUtils.readFileToString(htmlTemplateFile);
+			//System.out.println(htmlString);
+			String scriptTag =	"var myLatLng"+pIdentificador+" = {lat: "+lat+", lng: "+lon+"};" 
+					+"\n\n //$scriptVertices";
+
+			String scriptTag2 ="chicago"+pIdentificador+" : {"+
+					"center: myLatLng"+pIdentificador+","
+					+"color: '"+pColor+"',"
+					+"population: " + densidad
+					+"}, /*$scriptCirculos*/";
+
+			htmlString = htmlString.replace("//$scriptVertices", scriptTag);
+			htmlString = htmlString.replace("/*$scriptCirculos*/", scriptTag2);
+			File newHtmlFile = new File(mapaReq3);
+			FileUtils.writeStringToFile(newHtmlFile, htmlString);	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void mapaReq3Lineas(String pFuenteLat, String pFuenteLong, String pDestinoLat, String pDestinoLong, String pColor)
+	{
+		File htmlTemplateFile;
+		if(!escribio4)
+		{
+			htmlTemplateFile = new File(direccionReq3);
+			escribio4 = true;
+		}
+		else
+			htmlTemplateFile = new File(mapaReq3);		
+		String htmlString;
+		try {
+			htmlString = FileUtils.readFileToString(htmlTemplateFile);
+			String scriptTag4 = "var line = new google.maps.Polyline("
+					+ "{path: [{lat: "+pFuenteLat+", lng: "+pFuenteLong+"},{lat: "+pDestinoLat+", lng: "+pDestinoLong+"}],"
+					+ "strokeColor: '"+pColor+"',"
+					+ "strokeWeight: 1,"
+					+"icons: [{"
+					+"offset: '200%'"
+					+"}],"
+					+"map: map"
+					+"});"
+					+ "\n//$scriptLineas";
+			htmlString = htmlString.replace("//$scriptLineas", scriptTag4);
+			File newHtmlFile = new File(mapaReq3);
+			FileUtils.writeStringToFile(newHtmlFile, htmlString);	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	public static void mapaReq4(Lista<VerticeConServicios> lista)

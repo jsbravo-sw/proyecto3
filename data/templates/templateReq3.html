@@ -28,18 +28,22 @@
           zoom: 12,
           center: myLatLng
         });
-            
-        var myLatLng = {lat: 41.880994471, lng: -87.632746489};var marker = new google.maps.Marker({    position: myLatLng,    map: map,    title: 'Vertice mas congestionado'  });      var citymap = {chicago: {center: {lat: 41.880994471, lng: -87.632746489},population: 39.90626627321646}};
+
+        //$scriptVertices
+        
+        var citymap = {/*$scriptCirculos*/};
+        
+        //$scriptLineas
         
         // Construct the circle for each value in citymap.
         // Note: We scale the area of the circle based on the population.
         for (var city in citymap) {
           // Add the circle for this city to the map.
           var cityCircle = new google.maps.Circle({
-            strokeColor: '#FF0000',
+            strokeColor: citymap[city].color,
             strokeOpacity: 0.8,
             strokeWeight: 2,
-            fillColor: '#FF0000',
+            fillColor: citymap[city].color,
             fillOpacity: 0.35,
             map: map,
             center: citymap[city].center,

@@ -646,7 +646,6 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			CompFuertementeConexa comp = new CompFuertementeConexa(aux);
 			newLista.add(comp);
 		}
-
 		return newLista;
 	}
 
