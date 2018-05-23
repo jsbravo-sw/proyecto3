@@ -37,7 +37,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 	public Graph<String, VerticeConServicios, InfoServicios> graph;
 	public int param;
 
-	private Lista<String> req5Min, req5Max;
+	private Lista<String> req5Min, req5Max, req6Min, req6Max;
 	private String json;
 
 	public boolean cargarSistema(String direccionJson, int pParam) 
@@ -656,6 +656,8 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			System.out.println("El camino a seguir entre los dos puntos es: ");
 		}
 		double distancia = Double.MIN_VALUE;
+		double costo = 0;
+		double duracion = 0;
 		Lista<String> caminoVertices = req4();
 		Lista <VerticeConServicios> lista = new Lista<VerticeConServicios>();
 		for (int i=0;i<caminoVertices.size();i++)
@@ -667,7 +669,8 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 				double lon = Double.parseDouble(caminoVertices.get(i).split("/")[1]);
 
 				distancia+= Double.parseDouble(caminoVertices.get(i).split("/")[3]);
-
+				costo+= Double.parseDouble(caminoVertices.get(i).split("/")[5]);
+				duracion+= Double.parseDouble(caminoVertices.get(i).split("/")[6]);
 				VerticeConServicios aux = new VerticeConServicios(lat, lon);
 				System.out.println("Vértice:" + lat +"/" + lon);
 				lista.addAtEnd(aux);
@@ -685,6 +688,9 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		{
 
 			System.out.println("Con una distancia total de: " + distancia + " millas");
+			System.out.println("Con una duración total de: " + duracion + " segundos");
+			System.out.println("Con un costo total de: " + costo + " dólares");
+			
 
 
 			Maps.mapaReq4(lista);
@@ -812,8 +818,6 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 	public void verReq5()
 	{
 		req5();
-		System.out.println(req5Min.size());
-		System.out.println(req5Max.size());
 		verReq5Min(false);
 		try {
 			Thread.sleep((5*1000));
@@ -832,6 +836,8 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			System.out.println("El camino a seguir entre los dos puntos es: ");
 		}
 		double duracion = Double.MIN_VALUE;
+		double costo = 0;
+		double distancia = 0;
 		Lista<String> caminoVertices = req5Min;
 		Lista <VerticeConServicios> lista = new Lista<VerticeConServicios>();
 		for (int i=0;i<caminoVertices.size();i++)
@@ -843,6 +849,8 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 				double lon = Double.parseDouble(caminoVertices.get(i).split("/")[1]);
 
 				duracion += Double.parseDouble(caminoVertices.get(i).split("/")[3]);
+				costo+= Double.parseDouble(caminoVertices.get(i).split("/")[5]);
+				distancia+= Double.parseDouble(caminoVertices.get(i).split("/")[4]);
 
 				VerticeConServicios aux = new VerticeConServicios(lat, lon);
 				System.out.println("Vértice:" + lat +"/" + lon);
@@ -861,6 +869,8 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		{
 
 			System.out.println("Con una duración total de: " + duracion + " segundos");
+			System.out.println("Con una distancia total de: " + distancia + " millas");
+			System.out.println("Con un costo total de: " + costo + " dolares");
 
 
 			Maps.mapaReq5(lista);
@@ -885,6 +895,8 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			System.out.println("El camino a seguir entre los dos puntos es: ");
 		}
 		double duracion = Double.MIN_VALUE;
+		double costo = 0;
+		double distancia = 0;
 		Lista<String> caminoVertices = req5Max;
 		Lista <VerticeConServicios> lista = new Lista<VerticeConServicios>();
 		for (int i=0;i<caminoVertices.size();i++)
@@ -897,6 +909,8 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 
 				duracion += Double.parseDouble(caminoVertices.get(i).split("/")[3]);
 
+				costo+= Double.parseDouble(caminoVertices.get(i).split("/")[5]);
+				distancia+= Double.parseDouble(caminoVertices.get(i).split("/")[4]);
 				VerticeConServicios aux = new VerticeConServicios(lat, lon);
 				System.out.println("Vértice:" + lat +"/" + lon);
 				lista.addAtEnd(aux);
@@ -914,6 +928,8 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		{
 
 			System.out.println("Con una duración total de: " + duracion + " segundos");
+			System.out.println("Con una distancia total de: " + distancia + " millas");
+			System.out.println("Con un costo total de: " + costo + " dolares");
 
 
 			Maps.mapaReq5(lista);
@@ -930,8 +946,170 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		}
 
 	}
+	
+	public void req6()
+	{
+		Lista<String> dirAleatorias = cargarAleatorio();
+		String posicionInicial = dirAleatorias.get((int)(Math.random()*dirAleatorias.size()));
+		String posicionFinal = dirAleatorias.get((int)(Math.random()*dirAleatorias.size()));
+		String vertexInicial = "";
+		String vertexFinal = "";
+
+		double menorDistanciaInicial = Double.MAX_VALUE;
+		double menorDistanciaFinal = Double.MAX_VALUE;
+		for (int i=0; i<graph.vertex().keys().size();i++)
+		{
+			if (getDistance(Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[0]),Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[1]), Double.parseDouble(posicionInicial.split(";")[0]), Double.parseDouble(posicionInicial.split(";")[1]))<menorDistanciaInicial)
+			{
+				vertexInicial = graph.vertex().keys().get(i).getKey();
+				menorDistanciaInicial =getDistance(Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[0]),Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[1]), Double.parseDouble(posicionInicial.split(";")[0]), Double.parseDouble(posicionInicial.split(";")[1]));
+			}
+			if (getDistance(Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[0]),Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[1]), Double.parseDouble(posicionFinal.split(";")[0]), Double.parseDouble(posicionFinal.split(";")[1]))<menorDistanciaFinal)
+			{
+				vertexFinal = graph.vertex().keys().get(i).getKey();
+				menorDistanciaFinal =getDistance(Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[0]),Double.parseDouble(graph.vertex().keys().get(i).getKey().split("/")[1]), Double.parseDouble(posicionFinal.split(";")[0]), Double.parseDouble(posicionFinal.split(";")[1]));
+			}
+		}
+
+		req6Max = new Lista<String>();
+		req6Min = new Lista<String>();
+		req6Min = graph.getPath(vertexInicial, vertexFinal, 4);
+		req6Max = graph.getPath(vertexInicial, vertexFinal, 2);
+		
+
+	}
+
+	public void verReq6()
+	{
+		req6();
+		verReq6Min(false);
+		try {
+			Thread.sleep((5*1000));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		verReq6Max(false);
+	}
+	
+	
+	public void verReq6Min(boolean pRun)
+	{
+		if (!pRun)
+		{
+			System.out.println("El camino a seguir entre los dos puntos es: ");
+		}
+		double duracion = Double.MIN_VALUE;
+		double costo = 0;
+		double distancia = 0;
+		Lista<String> caminoVertices = req6Min;
+		Lista <VerticeConServicios> lista = new Lista<VerticeConServicios>();
+		for (int i=0;i<caminoVertices.size();i++)
+		{
+
+			if (!caminoVertices.get(i).contains("No"))
+			{
+				double lat = Double.parseDouble(caminoVertices.get(i).split("/")[0]);
+				double lon = Double.parseDouble(caminoVertices.get(i).split("/")[1]);
+
+				duracion += Double.parseDouble(caminoVertices.get(i).split("/")[3]);
+				costo+= Double.parseDouble(caminoVertices.get(i).split("/")[5]);
+				distancia+= Double.parseDouble(caminoVertices.get(i).split("/")[4]);
+
+				VerticeConServicios aux = new VerticeConServicios(lat, lon);
+				System.out.println("Vértice:" + lat +"/" + lon);
+				lista.addAtEnd(aux);
+			}
+		}
 
 
+		if (lista.size()==0)
+		{
+			verReq6Min(true);
+		}
+
+
+		if (lista.size()!=0)
+		{
+
+			System.out.println("Con una duración total de: " + duracion + " segundos");
+			System.out.println("Con una distancia total de: " + distancia + " millas");
+			System.out.println("Con un costo total de: " + costo + " dolares");
+
+
+			Maps.mapaReq6(lista);
+
+			//Abrir el mapa en el explorador
+			try 
+			{
+				File f = new File(Maps.mapaReq6);
+				java.awt.Desktop.getDesktop().browse(f.toURI());
+			} catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+
+	}
+	
+	public void verReq6Max(boolean pRun)
+	{
+		if (!pRun)
+		{
+			System.out.println("El camino a seguir entre los dos puntos es: ");
+		}
+		double duracion = Double.MIN_VALUE;
+		double costo = 0;
+		double distancia = 0;
+		Lista<String> caminoVertices = req6Max;
+		Lista <VerticeConServicios> lista = new Lista<VerticeConServicios>();
+		for (int i=0;i<caminoVertices.size();i++)
+		{
+
+			if (!caminoVertices.get(i).contains("No"))
+			{
+				double lat = Double.parseDouble(caminoVertices.get(i).split("/")[0]);
+				double lon = Double.parseDouble(caminoVertices.get(i).split("/")[1]);
+
+				duracion += Double.parseDouble(caminoVertices.get(i).split("/")[3]);
+
+				costo+= Double.parseDouble(caminoVertices.get(i).split("/")[5]);
+				distancia+= Double.parseDouble(caminoVertices.get(i).split("/")[4]);
+				VerticeConServicios aux = new VerticeConServicios(lat, lon);
+				System.out.println("Vértice:" + lat +"/" + lon);
+				lista.addAtEnd(aux);
+			}
+		}
+
+
+		if (lista.size()==0)
+		{
+			verReq6Max(true);
+		}
+
+
+		if (lista.size()!=0)
+		{
+
+			System.out.println("Con una duración total de: " + duracion + " segundos");
+			System.out.println("Con una distancia total de: " + distancia + " millas");
+			System.out.println("Con un costo total de: " + costo + " dolares");
+
+
+			Maps.mapaReq6(lista);
+
+			//Abrir el mapa en el explorador
+			try 
+			{
+				File f = new File(Maps.mapaReq6);
+				java.awt.Desktop.getDesktop().browse(f.toURI());
+			} catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+
+	}
 }
 
 

@@ -36,6 +36,8 @@ public class Maps {
 	public final static String mapaReq5 = "data/templates/mapaReq5.html";
 
 	public final static String direccionReq6 = "./data/templates/templateReq6.html";
+	
+	public final static String mapaReq6 = "data/templates/mapaReq6.html";
 
 	public static void mapaReq1(double lat, double lon, int pPopulation, int pTotalPopulation){
 		System.out.println("Se ha impreso el mapa");
@@ -275,6 +277,46 @@ public class Maps {
 		//scriptTag += "var line" + (lista.size()) + " = new google.maps.Polyline({ path: [{lat:" + lista.get(lista.size()-2).getLatRef() + ", lng:" + lista.get(lista.size()-2).getLongRef() + "}, {lat:" + lista.get(lista.size()-1).getLatRef() + ", lng:" +  lista.get(lista.size()-1).getLongRef()+ "}],icons: [{icon: lineSymbol,offset: '100%'}],map: map});";
 		htmlString = htmlString.replace("//$defineArcos", scriptTag);
 		File newHtmlFile = new File(mapaReq5);
+		FileUtils.writeStringToFile(newHtmlFile, htmlString);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static void mapaReq6(Lista<VerticeConServicios> lista)
+	{
+	
+		System.out.println("Se ha impreso el mapa");
+		try {
+			File htmlTemplateFile = new File(direccionReq4);
+			String htmlString;
+			htmlString = FileUtils.readFileToString(htmlTemplateFile);
+			//https://developers.google.com/maps/documentation/javascript/examples/circle-simple?hl=es-419
+			String scriptTag = "var citymap = {";
+			scriptTag +=  "vertice"+(lista.size()-1) + ": {center: {lat:" +  lista.get(lista.size()-1).getLatRef() + ", lng:" + lista.get(lista.size()-1).getLongRef() + "}, color: {fillColor: '#008000', strokeColor: '#008000'} },";
+			for (int i = lista.size()-2; i>0;i--)
+			{
+				scriptTag +=  "vertice"+(i) + ": {center: {lat:" +  lista.get(i).getLatRef() + ", lng:" + lista.get(i).getLongRef() + "}, color: {fillColor:'#696969', strokeColor: '#696969'}},";
+			}
+			scriptTag+= "vertice"+(0) + ": {center: {lat:" +  lista.get(0).getLatRef() + ", lng:" + lista.get(0).getLongRef() + "}, color: {fillColor:'#FF0000', strokeColor: '#FF0000'}}";
+			
+			//Finalizo
+			
+			scriptTag += "};";
+			htmlString = htmlString.replace("//$defineVertices", scriptTag);
+			
+			//TODO: Definir arcos
+			
+		scriptTag = "";
+		for (int i=(lista.size()-2);i>=0;i--)
+		{
+			scriptTag  += "var line" + (i) + " = new google.maps.Polyline({ path: [{lat:" + lista.get(i).getLatRef() + ", lng:" + lista.get(i).getLongRef() + "}, {lat:" + lista.get(i+1).getLatRef() + ", lng:" +  lista.get(i+1).getLongRef()+ "}],icons: [{icon: lineSymbol,offset: '100%'}],map: map});";
+		}
+		//scriptTag += "var line" + (lista.size()) + " = new google.maps.Polyline({ path: [{lat:" + lista.get(lista.size()-2).getLatRef() + ", lng:" + lista.get(lista.size()-2).getLongRef() + "}, {lat:" + lista.get(lista.size()-1).getLatRef() + ", lng:" +  lista.get(lista.size()-1).getLongRef()+ "}],icons: [{icon: lineSymbol,offset: '100%'}],map: map});";
+		htmlString = htmlString.replace("//$defineArcos", scriptTag);
+		File newHtmlFile = new File(mapaReq6);
 		FileUtils.writeStringToFile(newHtmlFile, htmlString);
 		}
 		catch (Exception e)

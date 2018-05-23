@@ -7,7 +7,7 @@ public class InfoServicios implements Comparable<InfoServicios>
 	private String vertexInicialId, vertexFinalId;
 	private double trip_total, trip_miles;
 	private double  trip_seconds;
-	private int cantidadServicios;
+	private int cantidadServicios=0;
 	private boolean peaje;
 	
 	public InfoServicios(double pTripTotal, double pTripMiles, double pTripSeconds)

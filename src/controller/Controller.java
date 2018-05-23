@@ -57,4 +57,9 @@ public class Controller
 		manager.verReq5();
 		
 	}
+
+	public static void verReq6() {
+		manager.verReq6();
+		
+	}
 }
