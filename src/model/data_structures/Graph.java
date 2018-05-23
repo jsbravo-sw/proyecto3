@@ -344,6 +344,11 @@ public class Graph <K extends Comparable<K>, V, A>{
 	{
 		ArbolBinarioRN arbol = new ArbolBinarioRN();
 		for (int i = 0; i < pVisitar.size(); i++) {
+			Vertex v = findVertex(pVisitar.get(i).id());
+			v.setMarcado(false);
+			adj.put(v.id(), v);
+		}
+		for (int i = 0; i < pVisitar.size(); i++) {
 			//System.out.println(((Keys)llaves.get(i)).getKey());
 			Vertex v = findVertex(pVisitar.get(i).id());
 			Lista<Vertex> newLista= new Lista();

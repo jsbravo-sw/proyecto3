@@ -101,7 +101,7 @@ public class TaxiTripsManagerView
 				break;
 			case 4: 
 				Lista aux = Controller.req2();
-				System.out.println("Total de componenetes fuertemente conexas: " + aux.size());
+				System.out.println("Total de componentes fuertemente conexas: " + aux.size());
 				CompFuertementeConexa verticesComp = null;
 				int comparador = 0;
 				for (int i = 0; i < aux.size(); i++) 
@@ -133,7 +133,6 @@ public class TaxiTripsManagerView
 				break;
 			case 5:
 				Lista aux4 = Controller.req2();
-				System.out.println("Total de componenetes fuertemente conexas2: " + aux4.size());
 				for (int i = 0; i < aux4.size(); i++) 
 				{
 					String color = ((CompFuertementeConexa)aux4.get(i)).getColorComponente();
@@ -156,6 +155,7 @@ public class TaxiTripsManagerView
 					}
 
 				}
+				break;
 			case 6:
 				Controller.verReq4();
 				break;
@@ -184,7 +184,7 @@ public class TaxiTripsManagerView
 		System.out.println("1. Cargar toda la informacion del sistema de una fuente de datos (small, medium o large).");
 		System.out.println("2. Cargar un grafo a partir de una fuente de datos.");
 		System.out.println("3. Mostrar la informacion del vertice mas congestionado");
-		System.out.println("4. Mostrar la informacion del componente fuertemente conexos mas grande.");
+		System.out.println("4. Mostrar la informacion del componente fuertemente conexo mas grande.");
 		System.out.println("5. Mostrar la informacion del componente fuertemente conexos.");
 		System.out.println("6. Encontrar camino de menor distancia para dos puntos aleatorios.");
 		System.out.println("7. Hallar caminos de mayor y menor duracion entre dos puntos aleatorios.");
