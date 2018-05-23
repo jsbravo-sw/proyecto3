@@ -974,8 +974,8 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 
 		req6Max = new Lista<String>();
 		req6Min = new Lista<String>();
-		req6Min = graph.getPath(vertexInicial, vertexFinal, 4);
-		graph.getAllPathsWrap(vertexInicial, vertexFinal);
+		//req6Min = graph.getPath(vertexInicial, vertexFinal, 4);
+		graph.printAllPaths(graph.findVertex(vertexInicial), graph.findVertex(vertexFinal));
 		
 
 	}
@@ -983,14 +983,14 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 	public void verReq6()
 	{
 		req6();
-		verReq6Min(false);
+		//verReq6Min(false);
 		try {
 			Thread.sleep((5*1000));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		verReq6Max(false);
+		//verReq6Max(false);
 	}
 	
 	

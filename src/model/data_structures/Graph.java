@@ -3,6 +3,7 @@ package model.data_structures;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.PriorityQueue;
@@ -869,6 +870,91 @@ public class Graph <K extends Comparable<K>, V, A>{
 			return null;
 		}
 	}
+	
+	
+	//____________________
+	
+	//Retorna la posicion de un vertice en la lista
+	public int find(Vertex pParam)
+	{
+		for (int i=0; i<vertices().size();i++)
+		{
+			if (vertices().get(i).idVertex.equals(pParam.idVertex))
+			{
+				return i;
+			}
+		}
+		return 0;
+			
+	}
+	
+	//Retorna la posicion de un vertice en la lista
+	public Vertex give(int pParam)
+	{
+		for (int i=0; i<vertices().size();i++)
+		{
+			if (i==pParam)
+			{
+				return vertices().get(i);
+			}
+		}
+		return null;
+			
+	}
+	
+	
+	  // Prints all paths from
+    // 's' to 'd'
+    public void printAllPaths(Vertex s, Vertex d) 
+    {
+        boolean[] isVisited = new boolean[vertices().size()];
+        ArrayList<Vertex> pathList = new ArrayList<>();
+         
+        //add source to path[]
+        pathList.add(s);
+         
+        //Call recursive utility
+        printAllPathsUtil(s, d, isVisited, pathList);
+    }
+ 
+    // A recursive function to print
+    // all paths from 'u' to 'd'.
+    // isVisited[] keeps track of
+    // vertices in current path.
+    // localPathList<> stores actual
+    // vertices in the current path
+    private void printAllPathsUtil(Vertex u, Vertex d,
+                                    boolean[] isVisited,
+                           ArrayList<Vertex> localPathList) {
+         
+        // Mark the current node
+        isVisited[find(u)] = true;
+         
+        if (u.idVertex.equals(d.idVertex)) 
+        {
+            System.out.println(localPathList);
+        }
+         
+        // Recur for all the vertices
+        // adjacent to current vertex
+        for (int i=0;i<u.outcoming.size();i++) 
+        {
+            if (!isVisited[i])
+            {
+                // store current node 
+                // in path[]
+                localPathList.add(give(i));
+                printAllPathsUtil(give(i), d, isVisited, localPathList);
+                 
+                // remove current node
+                // in path[]
+                localPathList.remove(give(i));
+            }
+        }
+         
+        // Mark the current node
+        isVisited[find(u)] = false;
+    }
 
 
 	public class Camino implements Comparable<Camino>
