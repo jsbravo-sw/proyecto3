@@ -23,6 +23,7 @@ public class Graph <K extends Comparable<K>, V, A>{
 	private hashTableSeparateChaining<K, Vertex> adj;
 	@JsonProperty 
 	private Lista<Edge> listaArcos;
+	private Lista<Graph<K, V, A>.Vertex> laLista;
 
 
 	//----------------------------------------------------------------------------------
@@ -811,11 +812,22 @@ public class Graph <K extends Comparable<K>, V, A>{
 		return path;
 	}
 
+	//TODO: Un método que guarde los caminos que hace el método recursivo de abajo
+	//TODO: 2.0 -> Cómo reconocer que ya tomó ese camino y no debería agregarlo sin cambiar los parámetros de inicio y fin?
 	public Lista<Camino> getAllPathsWrap(K from, K to)
 	{
-
+		Lista<Camino> resp = new Lista<Camino>();
+		for (int i=0; i<findVertex(from).outcoming.size();i++)
+		{
+			getAllPaths(from, to, null);
+			Camino nuevo = new Camino (laLista);
+			System.out.println("Agregué");
+			resp.add(nuevo);
+		}
+		
+		return resp;
 	}
-
+//TODO: Un método recursivo entre vertices que recorra todos los vertices que salen desde él y guarda el camino que recorrió hasta llegar al vertice final en un parámetro
 	public Vertex getAllPaths(K from, K to, Lista<Vertex> recorridos)
 	{
 		Vertex elInicial = findVertex(from);
@@ -824,11 +836,12 @@ public class Graph <K extends Comparable<K>, V, A>{
 		if (recorridos ==null)
 		{
 			Lista<Vertex> aux = new Lista <Vertex>();
-			aux.add(elInicial);
+			aux.addAtEnd(elInicial);
 			for (int i=0; i<elInicial.outcoming.size();i++)
 			{
 				if (elInicial.outcoming.get(i).equals(elFinal))
 				{
+					laLista = recorridos;
 					return elInicial;
 				}
 				else 
@@ -840,11 +853,12 @@ public class Graph <K extends Comparable<K>, V, A>{
 		}
 		else
 		{
-			recorridos.add(elInicial);
+			recorridos.addAtEnd(elInicial);
 			for (int i=0; i<elInicial.outcoming.size();i++)
 			{
 				if (elInicial.outcoming.get(i).equals(elFinal))
 				{
+					laLista = recorridos;
 					return elInicial;
 				}
 				else 
@@ -857,31 +871,38 @@ public class Graph <K extends Comparable<K>, V, A>{
 	}
 
 
-public class Camino implements Comparable<Camino>
-{
-	private Lista <Vertex> camino;
-
-	private Lista<Edge> arcos;
-	private double id;
-
-	public Camino()
+	public class Camino implements Comparable<Camino>
 	{
-		camino = new Lista<Vertex>();
-		arcos = new Lista<Edge>();
-		id = (Math.random() * 10000);
-	}
+		private Lista <Vertex> camino;
 
-	public int compareTo(Camino arg0)
-	{
-		if (id == arg0.id)
+		private Lista<Edge> arcos;
+		private double id;
+
+		public Camino()
 		{
-			return 0;
+			camino = new Lista<Vertex>();
+			arcos = new Lista<Edge>();
+			id = (Math.random() * 10000);
 		}
-		return id>arg0.id ? 1 : -1;
+		
+		public Camino(Lista<Vertex> pVertex )
+		{
+			camino = pVertex;
+			arcos = new Lista<Edge>();
+			id = (Math.random() * 10000);
+		}
+
+		public int compareTo(Camino arg0)
+		{
+			if (id == arg0.id)
+			{
+				return 0;
+			}
+			return id>arg0.id ? 1 : -1;
+		}
+
+
 	}
-
-
-}
 
 
 
