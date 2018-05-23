@@ -925,19 +925,23 @@ public class Graph <K extends Comparable<K>, V, A>{
          
         if (findVertex(u) == findVertex(d)) 
         {
-            System.out.println(localPathList);
+            for (int i=0; i<localPathList.size();i++)
+            {
+            	System.out.print(localPathList.get(i).idVertex + " -> ");
+            }
         }
          
         // Recur for all the vertices
         // adjacent to current vertex
-       for (int i=0;i<findVertex(u).outcoming.size()-1;i++)
+       for (int i=0;i<findVertex(u).outcoming.size();i++)
        {
         
-    	   if (isVisited.get(findVertex(u).outcoming.get(i).idVertex) != null && !isVisited.get(findVertex(u).outcoming.get(i).idVertex))
+    	   if (!isVisited.get(findVertex(u).outcoming.get(i).idVertex))
             {
                 // store current node 
                 // in path[]
                 localPathList.add((findVertex(u).outcoming.get(i)));
+                System.out.println((findVertex(u).outcoming.get(i)));
                 printAllPathsUtil((findVertex(u).outcoming.get(i)).idVertex, d, isVisited, localPathList);
                  
                 // remove current node

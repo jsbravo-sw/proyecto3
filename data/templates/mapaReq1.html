@@ -3,7 +3,7 @@
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>Simple markers</title>
+    <title>Vertice mas congestionado</title>
     <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -28,9 +28,9 @@
           zoom: 12,
           center: myLatLng
         });
-            
+
         var myLatLng = {lat: 41.880994471, lng: -87.632746489};var marker = new google.maps.Marker({    position: myLatLng,    map: map,    title: 'Vertice mas congestionado'  });      var citymap = {chicago: {center: {lat: 41.880994471, lng: -87.632746489},population: 33.507552870090635}};
-        
+
         // Construct the circle for each value in citymap.
         // Note: We scale the area of the circle based on the population.
         for (var city in citymap) {
@@ -47,7 +47,7 @@
           });
         }
       }
-      
+
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgW4Wsdf4DaufVkHmsGYcKOkXlqbuqLXo&callback=initMap">

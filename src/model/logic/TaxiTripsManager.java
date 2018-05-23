@@ -974,8 +974,8 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 
 		req6Max = new Lista<String>();
 		req6Min = new Lista<String>();
-		//req6Min = graph.getPath(vertexInicial, vertexFinal, 4);
-		graph.printAllPaths(vertexInicial, vertexFinal);
+		req6Min = graph.getPath(vertexInicial, vertexFinal, 4);
+		//graph.printAllPaths(vertexInicial, vertexFinal);
 		
 
 	}
@@ -983,7 +983,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 	public void verReq6()
 	{
 		req6();
-		//verReq6Min(false);
+		verReq6Min(false);
 		try {
 			Thread.sleep((5*1000));
 		} catch (InterruptedException e) {
@@ -1023,18 +1023,6 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 			}
 		}
 
-
-		if (lista.size()==0)
-		{
-			try 
-			{
-				verReq6Min(true);	
-			}
-			catch (Exception e)
-			{
-				System.out.println("No se encontró un camino entre los puntos aleatorios");
-			}
-		}
 
 
 		if (lista.size()!=0)
