@@ -975,7 +975,7 @@ public class TaxiTripsManager implements ITaxiTripsManager {
 		req6Max = new Lista<String>();
 		req6Min = new Lista<String>();
 		//req6Min = graph.getPath(vertexInicial, vertexFinal, 4);
-		graph.printAllPaths(graph.findVertex(vertexInicial), graph.findVertex(vertexFinal));
+		graph.printAllPaths(vertexInicial, vertexFinal);
 		
 
 	}

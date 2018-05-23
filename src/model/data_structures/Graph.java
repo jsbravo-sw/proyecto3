@@ -871,47 +871,42 @@ public class Graph <K extends Comparable<K>, V, A>{
 		}
 	}
 	
+	private boolean [] isVisited()
+	{
+		boolean [] arr = new boolean [vertices().size()];
+		for (int i=0; i<vertices().size();i++)
+		{
+			arr [i] = vertices().get(i).marcado;
+		}
+		return arr;
+	}
+	
+	private void restartIsVisited()
+	{
+		for (int i=0; i<vertices().size();i++)
+		{
+			vertices().get(i).marcado = false;
+		}
+	}
+	
+	
 	
 	//____________________
 	
-	//Retorna la posicion de un vertice en la lista
-	public int find(Vertex pParam)
-	{
-		for (int i=0; i<vertices().size();i++)
-		{
-			if (vertices().get(i).idVertex.equals(pParam.idVertex))
-			{
-				return i;
-			}
-		}
-		return 0;
-			
-	}
-	
-	//Retorna la posicion de un vertice en la lista
-	public Vertex give(int pParam)
-	{
-		for (int i=0; i<vertices().size();i++)
-		{
-			if (i==pParam)
-			{
-				return vertices().get(i);
-			}
-		}
-		return null;
-			
-	}
-	
-	
 	  // Prints all paths from
     // 's' to 'd'
-    public void printAllPaths(Vertex s, Vertex d) 
+    public void printAllPaths(K s, K d) 
     {
-        boolean[] isVisited = new boolean[vertices().size()];
         ArrayList<Vertex> pathList = new ArrayList<>();
+        
+        hashTableSeparateChaining<K, Boolean> isVisited = new hashTableSeparateChaining<K, Boolean>(vertices().size());
+        for (int i=0; i<vertices().size();i++)
+        {
+        	isVisited.put(vertices().get(i).idVertex, false);
+        }
          
         //add source to path[]
-        pathList.add(s);
+        pathList.add(findVertex(s));
          
         //Call recursive utility
         printAllPathsUtil(s, d, isVisited, pathList);
@@ -923,39 +918,37 @@ public class Graph <K extends Comparable<K>, V, A>{
     // vertices in current path.
     // localPathList<> stores actual
     // vertices in the current path
-    private void printAllPathsUtil(Vertex u, Vertex d,
-                                    boolean[] isVisited,
-                           ArrayList<Vertex> localPathList) {
+    private void printAllPathsUtil(K u, K d, hashTableSeparateChaining<K, Boolean> isVisited, ArrayList<Vertex> localPathList) {
          
         // Mark the current node
-        isVisited[find(u)] = true;
+    	isVisited.put(u, true);
          
-        if (u.idVertex.equals(d.idVertex)) 
+        if (findVertex(u) == findVertex(d)) 
         {
             System.out.println(localPathList);
         }
          
         // Recur for all the vertices
         // adjacent to current vertex
-        for (int i=0;i<u.outcoming.size();i++) 
-        {
-            if (!isVisited[i])
+       for (int i=0;i<findVertex(u).outcoming.size()-1;i++)
+       {
+        
+    	   if (isVisited.get(findVertex(u).outcoming.get(i).idVertex) != null && !isVisited.get(findVertex(u).outcoming.get(i).idVertex))
             {
                 // store current node 
                 // in path[]
-                localPathList.add(give(i));
-                printAllPathsUtil(give(i), d, isVisited, localPathList);
+                localPathList.add((findVertex(u).outcoming.get(i)));
+                printAllPathsUtil((findVertex(u).outcoming.get(i)).idVertex, d, isVisited, localPathList);
                  
                 // remove current node
                 // in path[]
-                localPathList.remove(give(i));
+                localPathList.remove(findVertex(u).outcoming.get(i));
             }
         }
          
         // Mark the current node
-        isVisited[find(u)] = false;
+   	isVisited.put(u, false);
     }
-
 
 	public class Camino implements Comparable<Camino>
 	{
